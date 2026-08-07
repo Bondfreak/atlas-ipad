@@ -1,4 +1,4 @@
-const CACHE = "atlas-ipad-alpha-v0.1";
+const CACHE = "atlas-ipad-alpha-v0.1.1";
 const ASSETS = [
   "./",
   "./index.html",
