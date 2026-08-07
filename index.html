@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Atlas">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Atlas iPad Alpha v0.3.4</title>
+<title>Atlas iPad Alpha v0.3.5</title>
 <style>
 :root{--ink:#f7f4ed;--muted:rgba(255,255,255,.72);--panel:rgba(7,20,27,.70)}
 *{box-sizing:border-box} html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0c1b22}
@@ -64,7 +64,7 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 @keyframes welcome{0%,36%{opacity:0;transform:translateY(8px)}50%,70%{opacity:.98;transform:translateY(0)}100%{opacity:0;transform:translateY(-5px)}}
 @keyframes hint{to{opacity:.74}} @keyframes hotspotIn{to{opacity:1}}
 @keyframes ring{0%,100%{transform:translate(-50%,-50%) scale(.78);opacity:.25}50%{transform:translate(-50%,-50%) scale(1.08);opacity:.92}}
-@keyframes waterJourney{0%{left:8%;top:calc(24% - 6px);opacity:0}5%{opacity:1}42%{left:91%;top:calc(24% - 6px);opacity:1}50%{left:94%;top:calc(50% - 6px);opacity:1}58%{left:91%;top:calc(76% - 6px);opacity:1}95%{left:8%;top:calc(76% - 6px);opacity:1}100%{left:8%;top:calc(76% - 6px);opacity:0}}
+@keyframes waterJourney{0%{left:8%;top:calc(24% - 6px);opacity:0}5%{opacity:1}42%{left:calc(92.4% - 9px);top:calc(24% - 6px);opacity:1}50%{left:calc(92.4% - 9px);top:calc(50% - 6px);opacity:1}58%{left:calc(92.4% - 9px);top:calc(76% - 6px);opacity:1}95%{left:8%;top:calc(76% - 6px);opacity:1}100%{left:8%;top:calc(76% - 6px);opacity:0}}
 @media (orientation:portrait){#app::after{content:"Drej iPad vandret";position:absolute;inset:0;display:grid;place-items:center;background:#0c1b22;color:#fff;font-size:24px;letter-spacing:.04em;z-index:50}}
 @media (prefers-reduced-motion:reduce){#hero,#welcome,#hint,#hotspot,#hotspot::after,#drop{animation:none}#hotspot{opacity:1}#hint{opacity:.74}}
 </style>
@@ -72,7 +72,7 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 <body>
 <main id="app">
 <img id="hero" src="Hero-v2.png" alt="Shaka i roligt vand">
-<div id="veil"></div><div id="version">Atlas iPad Alpha · v0.3.4</div><div id="welcome">Velkommen ombord.</div><div id="hint">Rør ved båden</div>
+<div id="veil"></div><div id="version">Atlas iPad Alpha · v0.3.5</div><div id="welcome">Velkommen ombord.</div><div id="hint">Rør ved båden</div>
 <button id="hotspot" aria-label="Udforsk maskinrummet"><span>Udforsk maskinrummet</span></button>
 
 <section id="engine" class="overlay" aria-hidden="true">
@@ -83,7 +83,7 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 <section id="cooling" class="overlay" aria-hidden="true">
 <div id="coolingStage">
 <button class="close" id="coolingClose" aria-label="Tilbage til maskinrummet">×</button>
-<div id="buildBadge">Atlas v0.3.4 · preview</div>
+<div id="buildBadge">Atlas v0.3.5 · preview</div>
 <div id="coolingTitle"><small>Første systemrejse · foreløbig flowmodel</small><h2>Motorkøling</h2><p>Følg den komplette kandidatmodel i to rækker: ind til filteret og videre gennem motorens identificerede køletrin.</p></div>
 <div id="map">
 <div class="flowLine top"></div><div class="flowTurn"></div><div class="flowLine bottom"></div>
