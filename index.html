@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Atlas">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Atlas iPad Alpha v0.3.1</title>
+<title>Atlas iPad Alpha v0.3.2</title>
 <style>
 :root{--ink:#f7f4ed;--muted:rgba(255,255,255,.72);--panel:rgba(7,20,27,.70)}
 *{box-sizing:border-box} html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0c1b22}
@@ -36,14 +36,14 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 #coolingTitle{position:absolute;left:6%;top:7%;z-index:3}
 #coolingTitle small,.sourceId{display:block;letter-spacing:.18em;text-transform:uppercase;opacity:.62;margin-bottom:10px;font-size:11px}
 #coolingTitle h2{font-size:clamp(38px,6vw,74px)} #coolingTitle p{font-size:clamp(16px,1.8vw,22px);line-height:1.5;max-width:620px;opacity:.76}
-#map{position:absolute;left:5%;right:5%;top:36%;height:48%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:1fr 1fr;column-gap:3.2%;row-gap:14%;align-items:center}
+#map{position:absolute;left:4%;right:4%;top:36%;height:48%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:1fr 1fr;column-gap:1.8%;row-gap:14%;align-items:center}
 .flowNode{position:relative;z-index:2;min-width:0;height:100%;padding:4px 2px;display:grid;grid-template-rows:62px auto;align-content:center;justify-items:center;text-align:center;border:0;background:transparent;color:inherit}
 .flowNode .icon{width:72px;height:58px;display:grid;place-items:center;color:rgba(227,246,252,.94);filter:drop-shadow(0 6px 12px rgba(0,0,0,.28))}
 .flowNode .icon svg{width:100%;height:100%;overflow:visible;stroke:currentColor;stroke-width:1.7;fill:rgba(111,202,238,.08);stroke-linecap:round;stroke-linejoin:round}
 .flowNode b{display:block;font-size:13px;font-weight:520;line-height:1.15;margin-top:5px}.flowNode span{display:block;margin-top:3px;font-size:10px;line-height:1.2;opacity:.58}
 .flowNode.action{cursor:pointer}.flowNode.action .icon{color:#8bdcff}.flowNode.action::after{content:"Tryk";position:absolute;right:5%;top:5%;padding:3px 6px;border-radius:999px;background:rgba(111,202,238,.18);font-size:8px;letter-spacing:.12em;text-transform:uppercase}
-#n1{grid-column:1;grid-row:1}#n2{grid-column:2;grid-row:1}#n3{grid-column:3;grid-row:1}#n4{grid-column:5;grid-row:1}
-#n5{grid-column:5;grid-row:2}#n6{grid-column:4;grid-row:2}#n7{grid-column:3;grid-row:2}#n8{grid-column:2;grid-row:2}#n9{grid-column:1;grid-row:2}
+#n1{grid-column:1;grid-row:1}#n2{grid-column:2;grid-row:1}#n3{grid-column:3;grid-row:1}#n4{grid-column:4;grid-row:1}#n5{grid-column:5;grid-row:1}#n6{grid-column:6;grid-row:1}
+#n7{grid-column:6;grid-row:2}#n8{grid-column:5;grid-row:2}#n9{grid-column:4;grid-row:2}#n10{grid-column:3;grid-row:2}#n11{grid-column:2;grid-row:2}#n12{grid-column:1;grid-row:2}
 .flowLine{position:absolute;z-index:1;height:3px;border-radius:999px;background:linear-gradient(90deg,rgba(80,185,232,.25),rgba(111,202,238,.78),rgba(80,185,232,.25))}
 .flowLine.top{left:8%;right:8%;top:24%}.flowLine.bottom{left:8%;right:8%;top:76%}.flowTurn{position:absolute;z-index:1;right:7.8%;top:24%;height:52%;width:28px;border:3px solid rgba(111,202,238,.52);border-left:0;border-radius:0 24px 24px 0}
 .flowLine::after{content:"";position:absolute;right:-2px;top:-4px;border-left:10px solid rgba(139,220,255,.88);border-top:5px solid transparent;border-bottom:5px solid transparent}.flowLine.bottom::after{right:auto;left:-2px;transform:rotate(180deg)}
@@ -71,7 +71,7 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 <body>
 <main id="app">
 <img id="hero" src="Hero-v2.png" alt="Shaka i roligt vand">
-<div id="veil"></div><div id="version">Atlas iPad Alpha · v0.3.1</div><div id="welcome">Velkommen ombord.</div><div id="hint">Rør ved båden</div>
+<div id="veil"></div><div id="version">Atlas iPad Alpha · v0.3.2</div><div id="welcome">Velkommen ombord.</div><div id="hint">Rør ved båden</div>
 <button id="hotspot" aria-label="Udforsk maskinrummet"><span>Udforsk maskinrummet</span></button>
 
 <section id="engine" class="overlay" aria-hidden="true">
@@ -82,21 +82,24 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 <section id="cooling" class="overlay" aria-hidden="true">
 <div id="coolingStage">
 <button class="close" id="coolingClose" aria-label="Tilbage til maskinrummet">×</button>
-<div id="coolingTitle"><small>Første systemrejse · foreløbig flowmodel</small><h2>Motorkøling</h2><p>Følg søvandet i to rækker: ind til filteret og videre gennem motorens dokumenterede køletrin.</p></div>
+<div id="coolingTitle"><small>Første systemrejse · foreløbig flowmodel</small><h2>Motorkøling</h2><p>Følg den komplette kandidatmodel i to rækker: ind til filteret og videre gennem motorens identificerede køletrin.</p></div>
 <div id="map">
 <div class="flowLine top"></div><div class="flowTurn"></div><div class="flowLine bottom"></div>
 <div class="flowNode" id="n1"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M5 34c8-9 16 9 24 0s16 9 24 0 10 4 14 1"/><path d="M8 43c7-7 14 7 21 0s14 7 21 0 11 4 17 0"/></svg></span><span><b>Sø</b><span>kølevand</span></span></div>
 <div class="flowNode" id="n2"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M8 13h56v10H8z"/><path d="M29 23v23h20V23"/><path d="M24 46h30"/><path d="M34 32h10"/></svg></span><span><b>Skroggennemføring</b><span>ind gennem skroget</span></span></div>
-<div class="flowNode" id="n3"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M6 34h18l12-12 12 12h18"/><path d="M24 34l12 12 12-12"/><path d="M36 22V10"/><path d="M25 10h22"/></svg></span><span><b>Søventil</b><span>lukker indtaget</span></span></div>
-<button class="flowNode action" id="n4" aria-label="Åbn søvandsfilter og pumpe"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M18 12h36l-4 34H22z"/><path d="M22 20h28"/><path d="M27 27h18M27 33h18M28 39h16"/></svg></span><span><b>Søvandsfilter</b><span>opfanger urenheder</span></span></button>
+<div class="flowNode" id="n3"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M6 34h18l12-12 12 12h18"/><path d="M24 34l12 12 12-12"/><path d=<div class="flowNode" id="n4"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="9" y="18" width="54" height="24" rx="5"/><path d="M18 18v24M27 18v24M36 18v24M45 18v24M54 18v24"/></svg></span><span><b>Styresystem-oliekøler</b><span>køler IPS-styresystemets olie</span></span></div>
 <div class="flowNode" id="n5"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><circle cx="35" cy="30" r="18"/><path d="M35 12v36M17 30h36"/><circle cx="35" cy="30" r="5"/><path d="M53 23h13v14H53"/></svg></span><span><b>Søvandspumpe</b><span>impelleren skaber flow</span></span></div>
-<div class="flowNode" id="n6"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="9" y="14" width="54" height="32" rx="5"/><path d="M18 14v32M27 14v32M36 14v32M45 14v32M54 14v32"/></svg></span><span><b>Ladeluftkøler</b><span>køler indsugningsluften</span></span></div>
-<div class="flowNode" id="n7"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="8" y="18" width="56" height="24" rx="12"/><path d="M18 18v24M27 18v24M36 18v24M45 18v24M54 18v24"/></svg></span><span><b>Varmeveksler</b><span>EPF-0029 · Shaka-variant</span></span></div>
-<div class="flowNode" id="n8"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M13 13h22v15c0 9 7 16 16 16h9"/><path d="M13 9v8M60 39v10"/><path d="M42 20c5 1 9 5 10 10"/></svg></span><span><b>Udstødningsknæ</b><span>vandet tilføres udstødningen</span></span></div>
-<div class="flowNode" id="n9"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M9 14h27v14c0 8 7 15 15 15h12"/><path d="M50 36l13 7-13 7"/><path d="M6 52c7-6 14 6 21 0s14 6 21 0"/></svg></span><span><b>Våd udstødning</b><span>vandet forlader systemet</span></span></div>
+<button class="flowNode action" id="n6" aria-label="Åbn søvandsfilter og pumpe"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M18 12h36l-4 34H22z"/><path d="M22 20h28"/><path d="M27 27h18M27 33h18M28 39h16"/></svg></span><span><b>Søvandsfilter</b><span>opfanger urenheder</span></span></button>
+<div class="flowNode" id="n7"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="9" y="18" width="54" height="24" rx="5"/><path d="M18 18v24M27 18v24M36 18v24M45 18v24M54 18v24"/></svg></span><span><b>Brændstofkøler</b><span>køler returbrændstoffet</span></span></div>
+<div class="flowNode" id="n8"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="9" y="14" width="54" height="32" rx="5"/><path d="M18 14v32M27 14v32M36 14v32M45 14v32M54 14v32"/></svg></span><span><b>Ladeluftkøler</b><span>køler indsugningsluften</span></span></div>
+<div class="flowNode" id="n9"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="9" y="18" width="54" height="24" rx="5"/><path d="M18 18v24M27 18v24M36 18v24M45 18v24M54 18v24"/></svg></span><span><b>Motoroliekøler</b><span>fører varme fra motorolien</span></span></div>
+<div class="flowNode" id="n10"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="8" y="18" width="56" height="24" rx="12"/><path d="M18 18v24M27 18v24M36 18v24M45 18v24M54 18v24"/></svg></span><span><b>Varmeveksler</b><span>EPF-0029 · Shaka-variant</span></span></div>
+<div class="flowNode" id="n11"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M13 13h22v15c0 9 7 16 16 16h9"/><path d="M13 9v8M60 39v10"/><path d="M42 20c5 1 9 5 10 10"/></svg></span><span><b>Udstødningsknæ</b><span>vandet tilføres udstødningen</span></span></div>
+<div class="flowNode" id="n12"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M9 14h27v14c0 8 7 15 15 15h12"/><path d="M50 36l13 7-13 7"/><path d="M6 52c7-6 14 6 21 0s14 6 21 0"/></svg></span><span><b>Våd udstødning</b><span>vandet forlader systemet</span></span></div>
+6 21 0s14 6 21 0"/></svg></span><span><b>Våd udstødning</b><span>vandet forlader systemet</span></span></div>
 <div id="drop"></div>
 </div>
-<div id="coolingNote"><strong>Impelleren er kritisk:</strong> uden flow kan motoren ikke komme af med varmen. Skjult slangeføring er endnu ikke fysisk verificeret.</div>
+<div id="coolingNote"><strong>Impelleren er kritisk:</strong> uden flow kan motoren ikke komme af med varmen. Rækkefølgen følger PD01-kandidatmodellen; skjult slangeføring er endnu ikke fysisk verificeret.</div>
 </div>
 </section>
 
@@ -131,7 +134,7 @@ hotspot.addEventListener('click',openEngine);
 document.getElementById('engineClose').addEventListener('click',closeEngine);
 document.getElementById('openCooling').addEventListener('click',openCooling);
 document.getElementById('coolingClose').addEventListener('click',closeCooling);
-document.getElementById('n4').addEventListener('click',openPump);
+document.getElementById('n6').addEventListener('click',openPump);
 document.getElementById('detailClose').addEventListener('click',closePump);
 document.getElementById('detailBack').addEventListener('click',closePump);
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(pumpDetail.classList.contains('open'))closePump();else if(cooling.classList.contains('open'))closeCooling();else closeEngine()});
