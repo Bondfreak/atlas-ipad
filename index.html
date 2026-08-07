@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Atlas">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Atlas iPad Alpha v0.3</title>
+<title>Atlas iPad Alpha v0.3.1</title>
 <style>
 :root{--ink:#f7f4ed;--muted:rgba(255,255,255,.72);--panel:rgba(7,20,27,.70)}
 *{box-sizing:border-box} html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0c1b22}
@@ -71,7 +71,7 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 <body>
 <main id="app">
 <img id="hero" src="Hero-v2.png" alt="Shaka i roligt vand">
-<div id="veil"></div><div id="version">Atlas iPad Alpha · v0.3</div><div id="welcome">Velkommen ombord.</div><div id="hint">Rør ved båden</div>
+<div id="veil"></div><div id="version">Atlas iPad Alpha · v0.3.1</div><div id="welcome">Velkommen ombord.</div><div id="hint">Rør ved båden</div>
 <button id="hotspot" aria-label="Udforsk maskinrummet"><span>Udforsk maskinrummet</span></button>
 
 <section id="engine" class="overlay" aria-hidden="true">
@@ -82,7 +82,7 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 <section id="cooling" class="overlay" aria-hidden="true">
 <div id="coolingStage">
 <button class="close" id="coolingClose" aria-label="Tilbage til maskinrummet">×</button>
-<div id="coolingTitle"><small>Første systemrejse</small><h2>Motorkøling</h2><p>Følg søvandet i to rækker: ind til filteret og videre tilbage gennem motoren.</p></div>
+<div id="coolingTitle"><small>Første systemrejse · foreløbig flowmodel</small><h2>Motorkøling</h2><p>Følg søvandet i to rækker: ind til filteret og videre gennem motorens dokumenterede køletrin.</p></div>
 <div id="map">
 <div class="flowLine top"></div><div class="flowTurn"></div><div class="flowLine bottom"></div>
 <div class="flowNode" id="n1"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M5 34c8-9 16 9 24 0s16 9 24 0 10 4 14 1"/><path d="M8 43c7-7 14 7 21 0s14 7 21 0 11 4 17 0"/></svg></span><span><b>Sø</b><span>kølevand</span></span></div>
@@ -90,13 +90,13 @@ h1,h2{font-weight:260;margin:0} h1{font-size:clamp(42px,7vw,82px);line-height:1;
 <div class="flowNode" id="n3"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M6 34h18l12-12 12 12h18"/><path d="M24 34l12 12 12-12"/><path d="M36 22V10"/><path d="M25 10h22"/></svg></span><span><b>Søventil</b><span>lukker indtaget</span></span></div>
 <button class="flowNode action" id="n4" aria-label="Åbn søvandsfilter og pumpe"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M18 12h36l-4 34H22z"/><path d="M22 20h28"/><path d="M27 27h18M27 33h18M28 39h16"/></svg></span><span><b>Søvandsfilter</b><span>opfanger urenheder</span></span></button>
 <div class="flowNode" id="n5"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><circle cx="35" cy="30" r="18"/><path d="M35 12v36M17 30h36"/><circle cx="35" cy="30" r="5"/><path d="M53 23h13v14H53"/></svg></span><span><b>Søvandspumpe</b><span>impelleren skaber flow</span></span></div>
-<div class="flowNode" id="n6"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="9" y="14" width="54" height="32" rx="5"/><path d="M18 14v32M27 14v32M36 14v32M45 14v32M54 14v32"/></svg></span><span><b>Kølere</b><span>samlet køletrin</span></span></div>
-<div class="flowNode" id="n7"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="8" y="18" width="56" height="24" rx="12"/><path d="M18 18v24M27 18v24M36 18v24M45 18v24M54 18v24"/></svg></span><span><b>Varmeveksler</b><span>motorvarmen overføres</span></span></div>
+<div class="flowNode" id="n6"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="9" y="14" width="54" height="32" rx="5"/><path d="M18 14v32M27 14v32M36 14v32M45 14v32M54 14v32"/></svg></span><span><b>Ladeluftkøler</b><span>køler indsugningsluften</span></span></div>
+<div class="flowNode" id="n7"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><rect x="8" y="18" width="56" height="24" rx="12"/><path d="M18 18v24M27 18v24M36 18v24M45 18v24M54 18v24"/></svg></span><span><b>Varmeveksler</b><span>EPF-0029 · Shaka-variant</span></span></div>
 <div class="flowNode" id="n8"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M13 13h22v15c0 9 7 16 16 16h9"/><path d="M13 9v8M60 39v10"/><path d="M42 20c5 1 9 5 10 10"/></svg></span><span><b>Udstødningsknæ</b><span>vandet tilføres udstødningen</span></span></div>
 <div class="flowNode" id="n9"><span class="icon"><svg viewBox="0 0 72 58" aria-hidden="true"><path d="M9 14h27v14c0 8 7 15 15 15h12"/><path d="M50 36l13 7-13 7"/><path d="M6 52c7-6 14 6 21 0s14 6 21 0"/></svg></span><span><b>Våd udstødning</b><span>vandet forlader systemet</span></span></div>
 <div id="drop"></div>
 </div>
-<div id="coolingNote"><strong>Impelleren er kritisk:</strong> uden flow kan motoren ikke komme af med varmen.</div>
+<div id="coolingNote"><strong>Impelleren er kritisk:</strong> uden flow kan motoren ikke komme af med varmen. Skjult slangeføring er endnu ikke fysisk verificeret.</div>
 </div>
 </section>
 
