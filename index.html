@@ -131,7 +131,7 @@ hotspot.addEventListener('click',openEngine);
 document.getElementById('engineClose').addEventListener('click',closeEngine);
 document.getElementById('openCooling').addEventListener('click',openCooling);
 document.getElementById('coolingClose').addEventListener('click',closeCooling);
-document.getElementById('n2').addEventListener('click',openPump);
+document.getElementById('n4').addEventListener('click',openPump);
 document.getElementById('detailClose').addEventListener('click',closePump);
 document.getElementById('detailBack').addEventListener('click',closePump);
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(pumpDetail.classList.contains('open'))closePump();else if(cooling.classList.contains('open'))closeCooling();else closeEngine()});
