@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0c1b22">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Atlas">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Atlas iPad Alpha v0.1</title>
+<style>
+:root{
+  --ink:#f7f4ed;
+  --muted:rgba(255,255,255,.72);
+  --panel:rgba(7,20,27,.70);
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0c1b22}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  user-select:none;
+}
+button{font:inherit}
+#app{position:relative;width:100%;height:100%;overflow:hidden;background:#0c1b22}
+#hero{
+  position:absolute;inset:-1.5%;width:103%;height:103%;
+  object-fit:cover;object-position:center;
+  animation:breathe 18s ease-in-out infinite alternate;
+  transition:transform 1.2s ease,filter 1.2s ease;
+}
+#veil{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(3,10,15,.16),transparent 40%,rgba(3,10,15,.28));
+}
+#version{
+  position:absolute;top:max(18px,env(safe-area-inset-top));left:max(18px,env(safe-area-inset-left));
+  font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.62;
+}
+#welcome{
+  position:absolute;left:6%;bottom:10%;
+  font-size:clamp(22px,3vw,42px);font-weight:280;letter-spacing:.07em;
+  opacity:0;animation:welcome 7.5s ease forwards;
+  text-shadow:0 4px 20px rgba(0,0,0,.38)
+}
+#hint{
+  position:absolute;left:50%;bottom:max(24px,calc(20px + env(safe-area-inset-bottom)));
+  transform:translateX(-50%);
+  font-size:12px;letter-spacing:.17em;text-transform:uppercase;opacity:0;
+  animation:hint 2s ease 8.5s forwards;
+}
+#hotspot{
+  position:absolute;left:72.6%;top:56.8%;
+  width:64px;height:64px;border:0;background:transparent;padding:0;cursor:pointer;
+  opacity:0;animation:hotspotIn 2.2s ease 7.1s forwards;
+}
+#hotspot::before{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:12px;height:12px;border-radius:50%;
+  background:rgba(255,252,240,.98);
+  box-shadow:0 0 16px 5px rgba(255,248,220,.76);
+}
+#hotspot::after{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:42px;height:42px;border:1px solid rgba(255,255,255,.72);border-radius:50%;
+  animation:ring 3.8s ease-in-out infinite;
+}
+#hotspot span{
+  position:absolute;left:50%;top:60px;transform:translateX(-50%);
+  padding:9px 13px;border-radius:999px;white-space:nowrap;
+  border:1px solid rgba(255,255,255,.32);background:rgba(8,22,29,.28);
+  backdrop-filter:blur(10px);font-size:13px;letter-spacing:.06em;
+}
+.overlay{
+  position:absolute;inset:0;display:grid;place-items:center;
+  opacity:0;pointer-events:none;transition:opacity .9s ease;
+  background:rgba(3,11,15,.34);backdrop-filter:blur(4px);
+}
+.overlay.open{opacity:1;pointer-events:auto}
+.card{
+  width:min(620px,82vw);padding:44px;border-radius:28px;text-align:center;
+  border:1px solid rgba(255,255,255,.28);
+  background:linear-gradient(145deg,rgba(10,27,35,.80),rgba(7,20,27,.58));
+  box-shadow:0 30px 90px rgba(0,0,0,.34)
+}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.65;margin-bottom:18px}
+h1,h2{font-weight:260;margin:0}
+h1{font-size:clamp(42px,7vw,82px);line-height:1;margin-bottom:18px}
+.question{font-size:clamp(18px,2vw,25px);font-weight:300;line-height:1.45;margin:0 0 28px}
+.primary{
+  min-height:52px;padding:13px 22px;border-radius:999px;color:#fff;
+  border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.08);
+}
+.close{
+  position:absolute;top:max(18px,env(safe-area-inset-top));right:max(20px,env(safe-area-inset-right));
+  width:52px;height:52px;border:0;border-radius:50%;background:rgba(0,0,0,.18);
+  color:white;font-size:30px;font-weight:200;
+}
+#coolingStage{
+  position:absolute;inset:6% 5%;
+  border-radius:28px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.25);
+  background:linear-gradient(180deg,rgba(15,39,49,.90),rgba(5,18,25,.92));
+}
+#coolingTitle{position:absolute;left:6%;top:7%;z-index:3}
+#coolingTitle small{display:block;letter-spacing:.22em;text-transform:uppercase;opacity:.64;margin-bottom:10px}
+#coolingTitle h2{font-size:clamp(38px,6vw,74px)}
+#coolingTitle p{font-size:clamp(16px,1.8vw,22px);line-height:1.5;max-width:620px;opacity:.76}
+#map{position:absolute;left:7%;right:7%;top:41%;height:35%}
+.node{
+  position:absolute;width:18%;min-width:120px;min-height:82px;padding:14px;
+  display:grid;place-content:center;text-align:center;border-radius:18px;
+  border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.055)
+}
+.node b{display:block;font-weight:500;margin-bottom:5px}
+.node span{font-size:.84em;opacity:.64}
+#n1{left:0;top:42%}#n2{left:26%;top:4%}#n3{left:53%;top:42%}#n4{right:0;top:4%}
+.pipe{position:absolute;height:3px;background:rgba(111,202,238,.30);transform-origin:left center;border-radius:999px}
+#p1{left:16%;top:58%;width:17%;transform:rotate(-20deg)}
+#p2{left:42%;top:26%;width:17%;transform:rotate(20deg)}
+#p3{left:68%;top:58%;width:16%;transform:rotate(-20deg)}
+#drop{
+  position:absolute;left:13%;top:55%;width:18px;height:24px;
+  border-radius:52% 52% 60% 60%/38% 38% 72% 72%;
+  background:rgba(91,205,255,.98);box-shadow:0 0 18px 5px rgba(62,181,238,.58);
+  transform:rotate(45deg);opacity:0
+}
+#cooling.open #drop{animation:waterJourney 9s ease-in-out .7s infinite}
+#coolingNote{position:absolute;left:6%;bottom:7%;font-size:clamp(15px,1.6vw,21px);opacity:.76}
+#installTip{
+  position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));
+  padding:10px 14px;border-radius:999px;background:rgba(8,22,29,.32);
+  border:1px solid rgba(255,255,255,.18);font-size:11px;letter-spacing:.08em;opacity:.60
+}
+@keyframes breathe{from{transform:scale(1.015)}to{transform:scale(1.035) translate3d(-.25%,-.15%,0)}}
+@keyframes welcome{0%,36%{opacity:0;transform:translateY(8px)}50%,70%{opacity:.98;transform:translateY(0)}100%{opacity:0;transform:translateY(-5px)}}
+@keyframes hint{to{opacity:.74}}
+@keyframes hotspotIn{to{opacity:1}}
+@keyframes ring{0%,100%{transform:translate(-50%,-50%) scale(.78);opacity:.25}50%{transform:translate(-50%,-50%) scale(1.08);opacity:.92}}
+@keyframes waterJourney{
+  0%{left:13%;top:55%;opacity:0;transform:rotate(45deg) scale(.75)}
+  6%{opacity:1}
+  24%{left:34%;top:24%;opacity:1}
+  48%{left:61%;top:55%;opacity:1}
+  72%{left:87%;top:24%;opacity:1}
+  100%{left:89%;top:24%;opacity:0;transform:rotate(45deg) scale(.65)}
+}
+@media (orientation:portrait){
+  #app::after{
+    content:"Drej iPad vandret";
+    position:absolute;inset:0;display:grid;place-items:center;
+    background:#0c1b22;color:#fff;font-size:24px;letter-spacing:.04em;z-index:50
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  #hero,#welcome,#hint,#hotspot,#hotspot::after,#drop{animation:none}
+  #hotspot{opacity:1}#hint{opacity:.74}
+}
+</style>
+</head>
+<body>
+<main id="app">
+  <img id="hero" src="assets/hero.png" alt="Shaka i roligt vand">
+  <div id="veil"></div>
+  <div id="version">Atlas iPad Alpha · v0.1</div>
+  <div id="welcome">Velkommen ombord.</div>
+  <div id="hint">Rør ved båden</div>
+
+  <button id="hotspot" aria-label="Udforsk maskinrummet"><span>Udforsk maskinrummet</span></button>
+
+  <section id="engine" class="overlay" aria-hidden="true">
+    <button class="close" id="engineClose" aria-label="Tilbage">×</button>
+    <div class="card">
+      <div class="eyebrow">Første opdagelse</div>
+      <h1>Maskinrummet</h1>
+      <p class="question">Hvad vil du gerne forstå?</p>
+      <button class="primary" id="openCooling">Udforsk motorkøling</button>
+    </div>
+  </section>
+
+  <section id="cooling" class="overlay" aria-hidden="true">
+    <div id="coolingStage">
+      <button class="close" id="coolingClose" aria-label="Tilbage til maskinrummet">×</button>
+      <div id="coolingTitle">
+        <small>Første systemrejse</small>
+        <h2>Motorkøling</h2>
+        <p>Følg søvandet gennem den første, forenklede rejse.</p>
+      </div>
+      <div id="map">
+        <div class="node" id="n1"><b>Søvandsindtag</b><span>vandet kommer ind</span></div>
+        <div class="node" id="n2"><b>Impellerpumpe</b><span>vandet sættes i bevægelse</span></div>
+        <div class="node" id="n3"><b>Varmeveksler</b><span>motorens varme overføres</span></div>
+        <div class="node" id="n4"><b>Udstødning</b><span>vandet forlader systemet</span></div>
+        <div class="pipe" id="p1"></div><div class="pipe" id="p2"></div><div class="pipe" id="p3"></div>
+        <div id="drop"></div>
+      </div>
+      <div id="coolingNote"><strong>Impelleren er kritisk:</strong> uden flow kan motoren ikke komme af med varmen.</div>
+    </div>
+  </section>
+
+  <div id="installTip">Safari → Del → Føj til hjemmeskærm</div>
+</main>
+<script>
+const engine=document.getElementById("engine");
+const cooling=document.getElementById("cooling");
+const hero=document.getElementById("hero");
+const hotspot=document.getElementById("hotspot");
+const hint=document.getElementById("hint");
+
+function openEngine(){
+  engine.classList.add("open");
+  engine.setAttribute("aria-hidden","false");
+  hero.style.transform="scale(1.08) translate3d(-1.2%,-.4%,0)";
+  hotspot.style.opacity="0";
+  hotspot.style.pointerEvents="none";
+  hint.style.opacity="0";
+}
+function closeEngine(){
+  engine.classList.remove("open");
+  engine.setAttribute("aria-hidden","true");
+  hero.style.transform="";
+  hotspot.style.opacity="1";
+  hotspot.style.pointerEvents="auto";
+}
+function openCooling(){
+  engine.classList.remove("open");
+  engine.setAttribute("aria-hidden","true");
+  cooling.classList.add("open");
+  cooling.setAttribute("aria-hidden","false");
+}
+function closeCooling(){
+  cooling.classList.remove("open");
+  cooling.setAttribute("aria-hidden","true");
+  engine.classList.add("open");
+  engine.setAttribute("aria-hidden","false");
+}
+
+hotspot.addEventListener("click",openEngine);
+document.getElementById("engineClose").addEventListener("click",closeEngine);
+document.getElementById("openCooling").addEventListener("click",openCooling);
+document.getElementById("coolingClose").addEventListener("click",closeCooling);
+
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Escape")return;
+  if(cooling.classList.contains("open"))closeCooling();
+  else closeEngine();
+});
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+}
+</script>
+</body>
+</html>
