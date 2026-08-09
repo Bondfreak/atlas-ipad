@@ -33,17 +33,17 @@ button{font:inherit}.app{height:100%;display:grid;grid-template-rows:64px minmax
 </head>
 <body>
 <section class="levelScreen" id="boatScreen">
-  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb"><b>Shaka</b></div><div class="status">System online · Atlas v0.3.9</div></header>
+  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb"><b>Shaka</b></div><div class="status">System online · Atlas v0.3.10</div></header>
   <div class="levelBody boatHero" role="img" aria-label="Shaka, Nord West 370, i havn"></div>
   <footer class="levelFooter boatMenu"><div class="menuLabel">Menu · Niveau 1</div><div class="identity"><span class="identityIcon">1</span><div><small>AKTUELT NIVEAU</small><strong>Shaka</strong></div></div><button class="menuMotor" id="openMotor" aria-label="Åbn Motor"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 14h21v21H13zM18 10h11v4M34 20h5v10h-5M9 19h4v12H9M18 35v4M29 35v4M18 21h11M18 27h7"/></svg><span>Motor</span><span class="levelArrow">›</span></button></footer>
 </section>
 <section class="levelScreen" id="motorScreen" hidden>
-  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / <b>Motor</b></div><div class="status">System online · Atlas v0.3.9</div></header>
+  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / <b>Motor</b></div><div class="status">System online · Atlas v0.3.10</div></header>
   <div class="levelBody"><div class="levelPanel"><div><span class="levelEyebrow">Niveau 2 · System</span><h1 class="levelTitle">Motor</h1></div><button class="levelCard" id="openCooling"><span class="levelIcon">M</span><span><small>Vælg system</small><strong>Kølesystem</strong><p>EPA-0005 · Cooling System</p></span><span class="levelArrow">›</span></button><p class="levelHint">Tryk på Kølesystem for at åbne den nuværende systemside.</p></div></div>
   <footer class="levelFooter"><button class="back" id="backToBoat">BACK</button><div class="identity"><span class="identityIcon">2</span><div><small>NAVIGATIONSNIVEAU</small><strong>Shaka / Motor</strong></div></div></footer>
 </section>
 <main class="app" id="systemScreen" hidden>
-  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / Motor / <b>Kølesystem · EPA-0005</b></div><div class="status">System online · Atlas v0.3.9</div></header>
+  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / Motor / <b>Kølesystem · EPA-0005</b></div><div class="status">System online · Atlas v0.3.10</div></header>
   <section class="workspace">
     <aside class="info" aria-live="polite"><div class="infoTop"><small>Informationszone</small><h2 id="infoTitle"></h2></div><div class="infoBody"><span class="badge">Normal · ingen aktive alarmer</span><p class="summary" id="infoSummary"></p><dl class="meta"><div><dt>Identitet</dt><dd id="infoId"></dd></div><div><dt>Engelsk kildetitel</dt><dd id="infoSource"></dd></div><div><dt>Atlas-status</dt><dd id="infoState"></dd></div></dl><div class="variant" id="variant" hidden></div><div class="actions"><button class="action">Forstå systemet</button><button class="action">Find komponenten</button><button class="action">Fejlfind</button><button class="action primary" id="sideOpen">Åbn EPF</button></div></div></aside>
     <section class="visual" aria-label="Kølesystemets grafik"><div class="visualHead"><small>Billede 3 · Systemgrafik</small><h1>Køling &amp; søvand</h1></div><div class="systemGraphic"><div class="graphicStage"><img src="cooling-system.png" alt="D4-motor med fem komponenter i søvandskredsen">
