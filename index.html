@@ -29,17 +29,40 @@ button{font:inherit}.app{height:100%;display:grid;grid-template-rows:64px minmax
 .levelScreen{height:100%;display:grid;grid-template-rows:64px minmax(0,1fr) 70px;background:#fff}.levelScreen[hidden],.app[hidden]{display:none}.levelBody{min-height:0;display:grid;place-items:center;padding:32px;background:linear-gradient(145deg,#f7f9fb 0%,#edf3f7 100%)}.boatHero{padding:0;background:#dfe7ec url('Hero-v2.png') center center/cover no-repeat}.levelFooter{display:grid;grid-template-columns:286px 1fr;border-top:1px solid var(--line)}.levelFooter .identity{justify-content:flex-start}.boatMenu{grid-template-columns:286px 1fr 238px}.menuLabel{display:flex;align-items:center;padding:0 24px;color:var(--muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase}.menuMotor{margin:8px 16px;border:1px solid var(--blue);border-radius:10px;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:700;cursor:pointer}.menuMotor svg{width:32px;height:32px;stroke:var(--blue);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}.menuMotor:active{background:#edf5ff}
 .motorWorkspace{min-height:0;display:grid;grid-template-columns:286px minmax(420px,1fr) 238px}.motorInfo{border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column}.motorInfoTop{padding:22px;background:var(--navy);color:#fff}.motorInfoTop small,.motorNavHead small{font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.68}.motorInfoTop h1{font-size:24px;margin:8px 0 0}.motorInfoBody{padding:20px;color:#4e5b65;font-size:13px;line-height:1.5}.motorInfoBody dl{margin:18px 0 0}.motorInfoBody div{padding:11px 0;border-top:1px solid var(--line)}.motorInfoBody dt{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}.motorInfoBody dd{margin:4px 0 0;color:var(--ink);font-size:12px}.motorGraphic{min-width:0;display:flex;align-items:center;justify-content:center;padding:20px;background:#fff}.motorGraphic img{display:block;width:100%;height:100%;object-fit:contain}.motorNav{min-height:0;border-left:1px solid var(--line);background:#fbfcfd;display:flex;flex-direction:column}.motorNavHead{padding:18px 14px 10px}.motorNavHead strong{display:block;margin-top:5px;font-size:14px}.epaList{padding:0 8px 12px;overflow:auto}.epa{width:100%;min-height:39px;border:0;border-radius:8px;background:transparent;padding:7px 9px;text-align:left;color:#44515b;font-size:10.5px;line-height:1.2;cursor:pointer}.epa:active{background:#eef3f7}.epa.active{background:var(--blue);color:#fff;font-weight:650}.motorMenu{grid-template-columns:286px 1fr 238px}.motorMenu .back{border-right:1px solid var(--line)}.menuCurrent{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px}.menuCurrent strong{color:var(--ink);margin-left:7px}
 @media(max-width:900px){.workspace,.bottom{grid-template-columns:250px minmax(360px,1fr) 205px}.bottom{grid-template-columns:250px minmax(360px,1fr) 205px}.epfTitle{font-size:10px}.infoTop,.infoBody{padding:16px}}
-@media(orientation:portrait){body::after{content:"Drej iPad vandret";position:fixed;z-index:99;inset:0;display:grid;place-items:center;background:#0d2130;color:#fff;font-size:23px}}
+@media(orientation:portrait){
+  html,body{height:100%;height:100dvh}
+  .app,.levelScreen{grid-template-rows:60px minmax(0,1fr) 76px}
+  .topbar{gap:12px;padding:0 max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .brand{font-size:13px}.crumb{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.status{font-size:10px;white-space:nowrap}
+  .levelFooter,.boatMenu,.motorMenu,.bottom{grid-template-columns:132px minmax(0,1fr) 170px}
+  .menuLabel,.identity{padding:0 14px}.menuMotor{margin:8px 10px}.back{min-width:0}
+  .motorWorkspace{grid-template-columns:1fr;grid-template-rows:auto minmax(260px,1fr) 248px}
+  .motorInfo{border-right:0;border-bottom:1px solid var(--line)}
+  .motorInfoTop{padding:14px 18px}.motorInfoTop h1{font-size:20px;margin-top:4px}
+  .motorInfoBody{padding:12px 18px;font-size:11px}.motorInfoBody p{margin:8px 0}.motorInfoBody dl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 0}.motorInfoBody div{padding:7px 0}
+  .motorGraphic{padding:12px}.motorNav{border-left:0;border-top:1px solid var(--line)}
+  .motorNavHead{padding:10px 14px 6px}.epaList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;padding:0 10px 10px}.epa{min-height:34px}
+  .workspace{grid-template-columns:1fr;grid-template-rows:auto minmax(285px,1fr) 238px}
+  .info{border-right:0;border-bottom:1px solid var(--line)}.infoTop{padding:13px 18px}.infoTop h2{font-size:18px;margin-top:4px}
+  .infoBody{padding:10px 18px;display:grid;grid-template-columns:auto 1fr;gap:7px 16px;align-items:start}.summary{margin:0;font-size:11px}.meta{display:none}.variant{margin:0}.actions{margin:0;grid-template-columns:repeat(2,1fr)}.action{min-height:34px}
+  .visualHead{left:18px;top:12px}.visualHead h1{font-size:17px}.systemGraphic{inset:45px 10px 6px}
+  .epfNav{border-left:0;border-top:1px solid var(--line)}.navHead{padding:10px 14px 6px}.epfList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;padding:0 8px 10px}.epf{min-height:35px}
+  .detailCard{width:92vw;max-height:84dvh;padding:22px}
+}
+@media(orientation:portrait) and (max-width:760px){
+  .status{display:none}.levelFooter,.boatMenu,.motorMenu,.bottom{grid-template-columns:104px minmax(0,1fr) 136px}
+  .identity{gap:8px}.identityIcon{width:28px;height:28px}.identity strong{font-size:10px}.menuMotor{gap:6px}
+}
 </style>
 </head>
 <body>
 <section class="levelScreen" id="boatScreen">
-  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb"><b>Shaka</b></div><div class="status">System online · Atlas v0.3.11</div></header>
+  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb"><b>Shaka</b></div><div class="status">System online · Atlas v0.3.12</div></header>
   <div class="levelBody boatHero" role="img" aria-label="Shaka, Nord West 370, i havn"></div>
   <footer class="levelFooter boatMenu"><div class="menuLabel">Menu · Niveau 1</div><div class="identity"><span class="identityIcon">1</span><div><small>AKTUELT NIVEAU</small><strong>Shaka</strong></div></div><button class="menuMotor" id="openMotor" aria-label="Åbn Motor"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 14h21v21H13zM18 10h11v4M34 20h5v10h-5M9 19h4v12H9M18 35v4M29 35v4M18 21h11M18 27h7"/></svg><span>Motor</span><span class="levelArrow">›</span></button></footer>
 </section>
 <section class="levelScreen" id="motorScreen" hidden>
-  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / <b>Motor</b></div><div class="status">System online · Atlas v0.3.11</div></header>
+  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / <b>Motor</b></div><div class="status">System online · Atlas v0.3.12</div></header>
   <div class="motorWorkspace">
     <aside class="motorInfo"><div class="motorInfoTop"><small>Informationszone</small><h1>Motor</h1></div><div class="motorInfoBody"><span class="badge">2 × Volvo Penta D4-300</span><p>Vælg et motorsystem i navigationszonen for at gå videre til assemblies og komponenter.</p><dl><div><dt>Fremdrift</dt><dd>2 × D4-300 · IPS400</dd></div><div><dt>Båd</dt><dd>Shaka · Nord West 370</dd></div><div><dt>Niveau</dt><dd>2 · Motor</dd></div></dl></div></aside>
     <section class="motorGraphic" aria-label="Grafikzone med Shakas to motorer og IPS-drev"><img src="motor-system.png" alt="To Volvo Penta D4-motorer med IPS-drev"></section>
@@ -48,7 +71,7 @@ button{font:inherit}.app{height:100%;display:grid;grid-template-rows:64px minmax
   <footer class="levelFooter motorMenu"><button class="back" id="backToBoat">BACK</button><div class="menuCurrent">Menu · Niveau 2 <strong>Motor</strong></div><div class="identity"><span class="identityIcon">2</span><div><small>AKTUELT NIVEAU</small><strong>Shaka / Motor</strong></div></div></footer>
 </section>
 <main class="app" id="systemScreen" hidden>
-  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / Motor / <b>Kølesystem · EPA-0005</b></div><div class="status">System online · Atlas v0.3.11</div></header>
+  <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / Motor / <b>Kølesystem · EPA-0005</b></div><div class="status">System online · Atlas v0.3.12</div></header>
   <section class="workspace">
     <aside class="info" aria-live="polite"><div class="infoTop"><small>Informationszone</small><h2 id="infoTitle"></h2></div><div class="infoBody"><span class="badge">Normal · ingen aktive alarmer</span><p class="summary" id="infoSummary"></p><dl class="meta"><div><dt>Identitet</dt><dd id="infoId"></dd></div><div><dt>Engelsk kildetitel</dt><dd id="infoSource"></dd></div><div><dt>Atlas-status</dt><dd id="infoState"></dd></div></dl><div class="variant" id="variant" hidden></div><div class="actions"><button class="action">Forstå systemet</button><button class="action">Find komponenten</button><button class="action">Fejlfind</button><button class="action primary" id="sideOpen">Åbn EPF</button></div></div></aside>
     <section class="visual" aria-label="Kølesystemets grafik"><div class="visualHead"><small>Billede 3 · Systemgrafik</small><h1>Køling &amp; søvand</h1></div><div class="systemGraphic"><div class="graphicStage"><img src="cooling-system.png" alt="D4-motor med fem komponenter i søvandskredsen">
