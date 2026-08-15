@@ -38,10 +38,19 @@
     return {detail:payload.data||{},meta:payload.meta||{}};
   }
 
+  async function loadObjectDetail(publicId,options={}){
+    if(!publicId)throw new Error('publicId is required');
+    const base=baseUrl(options);
+    const encoded=encodeURIComponent(publicId);
+    const payload=await requestJson(`${base}/api/v1/objects/${encoded}`);
+    return {detail:payload.data||{},meta:payload.meta||{}};
+  }
+
   global.ShakaCore=Object.freeze({
     baseUrl:DEFAULT_BASE,
     depth:DEPTH,
     loadAssetInstance,
-    resolveAssetInstance
+    resolveAssetInstance,
+    loadObjectDetail
   });
 })(window);
