@@ -2,7 +2,7 @@
   'use strict';
 
   const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
-  const VERSION='v0.3.21';
+  const VERSION='v0.3.22';
   const assemblyScreen=document.getElementById('assemblyScreen');
   const assemblyInfo=assemblyScreen?.querySelector('.assemblyInfo');
   const infoTop=assemblyScreen?.querySelector('.assemblyInfoTop');
@@ -10,7 +10,7 @@
   if(!assemblyScreen||!assemblyInfo||!infoTop||!infoBody)return;
 
   document.querySelectorAll('.topbar .status').forEach(el=>{
-    el.textContent=el.textContent.replace(/Atlas v0\.3\.18|Atlas v0\.3\.19|Atlas v0\.3\.20/g,`Atlas ${VERSION}`);
+    el.textContent=el.textContent.replace(/Atlas v0\.3\.18|Atlas v0\.3\.19|Atlas v0\.3\.20|Atlas v0\.3\.21/g,`Atlas ${VERSION}`);
   });
 
   const style=document.createElement('style');
@@ -53,11 +53,18 @@
   async function loadCore(){
     if(loading)return;loading=true;retryEl.hidden=true;setStatus('','Forbinder…');relationsEl.innerHTML='<li>Indlæser…</li>';
     try{
-      if(!window.ShakaCore)throw new Error('Shaka Core client unavailable');
+      if(!window.ShakaCore)throw new Error('ShakaCore-klienten mangler');
       const result=await window.ShakaCore.loadAssetInstance(INSTANCE_ID);const data=result.detail;
       setText('coreLiveInstance',data.id);setText('coreLiveAsset',data.asset?.id);setText('coreLiveHost',data.host?.id);setText('coreLiveState',[data.slot,data.state].filter(Boolean).join(' · '));
       setText('coreLiveProvenance',Array.isArray(data.provenance)?`${data.provenance.length} records · ${new Set(data.provenance.map(item=>item.source)).size} kilder`:'—');renderRelations(result.graph.edges||[]);setStatus('ok','Live');loaded=true;
-    }catch(error){console.error('Shaka Core unavailable',error);setStatus('error','Core utilgængelig');relationsEl.innerHTML='<li>Live data kunne ikke hentes. Atlas fortsætter med statisk indhold.</li>';retryEl.hidden=false}finally{loading=false}
+    }catch(error){
+      console.error('Shaka Core unavailable',error);
+      const detail=error instanceof Error&&error.message?error.message:'Ukendt browserfejl';
+      setStatus('error','Core utilgængelig');
+      relationsEl.innerHTML='';
+      const li=document.createElement('li');li.textContent=`Fejl: ${detail}`;relationsEl.appendChild(li);
+      retryEl.hidden=false;
+    }finally{loading=false}
   }
   function maybeLoad(){placePanel();if(!assemblyScreen.hidden&&!loaded)loadCore()}
   retryEl.addEventListener('click',loadCore);new MutationObserver(maybeLoad).observe(assemblyScreen,{attributes:true,attributeFilter:['hidden']});window.addEventListener('resize',placePanel);window.addEventListener('orientationchange',()=>setTimeout(placePanel,0));maybeLoad();
