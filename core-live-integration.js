@@ -25,14 +25,14 @@
     .coreLiveRelations{margin-top:7px;padding-top:7px;border-top:1px solid #e7ecef;font-size:9px;line-height:1.4}.coreLiveRelations b{display:block;margin-bottom:5px;color:#14212b;font-size:9px}
     .coreLiveRelations ul{display:grid;gap:4px;margin:0;padding:0;list-style:none}.coreLiveRelations li{margin:0}
     .coreRelationButton{width:100%;border:1px solid #dfe6ec;border-radius:7px;background:#fff;padding:6px 7px;text-align:left;color:#14212b;font:inherit;font-size:9px;cursor:pointer}.coreRelationButton:active{background:#eef4f8}.coreRelationButton span{display:block;margin-top:2px;color:#73808b;font-size:8px;overflow-wrap:anywhere}
-    .coreNode{margin-top:7px;padding:8px;border:1px solid #d8e2e9;border-radius:8px;background:#fff}.coreNode[hidden]{display:none}.coreNodeHead{display:flex;gap:8px;align-items:flex-start}.coreNodeHead b{color:#14212b;font-size:9px;line-height:1.35}.coreNodeClose{margin-left:auto;border:0;background:transparent;color:#73808b;font-size:9px;cursor:pointer}.coreNodeMeta{margin-top:5px;color:#5f6d77;font-size:8.5px;line-height:1.45;overflow-wrap:anywhere}.coreNodeActions{display:flex;gap:6px;margin-top:7px}.coreNodeOpen,.coreLiveRetry{border:0;border-radius:7px;background:#0867ff;color:#fff;padding:6px 9px;font:inherit;font-size:9px;font-weight:700;cursor:pointer}.coreNodeOpen[hidden],.coreLiveRetry[hidden]{display:none}.coreNodeRelations{margin:7px 0 0;padding:7px 0 0 14px;border-top:1px solid #edf1f4;color:#4e5b65;font-size:8.5px;line-height:1.45}
+    .coreNode{margin-top:7px;padding:8px;border:1px solid #d8e2e9;border-radius:8px;background:#fff}.coreNode[hidden]{display:none}.coreNodeHead{display:flex;gap:8px;align-items:flex-start}.coreNodeHead b{color:#14212b;font-size:9px;line-height:1.35}.coreNodeClose{margin-left:auto;border:0;background:transparent;color:#73808b;font-size:9px;cursor:pointer}.coreNodeMeta{margin-top:5px;color:#5f6d77;font-size:8.5px;line-height:1.45;overflow-wrap:anywhere}.coreLiveRetry{margin-top:8px;border:0;border-radius:7px;background:#0867ff;color:#fff;padding:6px 9px;font:inherit;font-size:9px;font-weight:700;cursor:pointer}.coreLiveRetry[hidden]{display:none}
   `;
   document.head.appendChild(style);
 
   const panel=document.createElement('section');
   panel.className='coreLive';
   panel.setAttribute('aria-label','Live data fra Shaka Core');
-  panel.innerHTML=`<div class="coreLiveHead"><strong>SHAKA CORE · LIVE READ-ONLY</strong><span class="coreLiveStatus" id="coreLiveStatus">Klar</span></div><dl class="coreLiveGrid"><div><dt>Asset Instance</dt><dd id="coreLiveInstance">—</dd></div><div><dt>Asset</dt><dd id="coreLiveAsset">—</dd></div><div><dt>System</dt><dd id="coreLiveHost">—</dd></div><div><dt>Slot / state</dt><dd id="coreLiveState">—</dd></div><div><dt>Provenance</dt><dd id="coreLiveProvenance">—</dd></div><div><dt>API</dt><dd>HTTPS · no-store</dd></div></dl><div class="coreLiveRelations"><b>Direkte relationer · tryk for at navigere</b><ul id="coreLiveRelations"><li>Åbn Niveau 4 for at hente live data.</li></ul></div><div class="coreNode" id="coreNode" hidden><div class="coreNodeHead"><b id="coreNodeTitle">Relation</b><button class="coreNodeClose" id="coreNodeClose" type="button">Luk</button></div><div class="coreNodeMeta" id="coreNodeMeta"></div><div class="coreNodeActions"><button class="coreNodeOpen" id="coreNodeOpen" type="button" hidden>Åbn live nabo</button></div><ul class="coreNodeRelations" id="coreNodeRelations" hidden></ul></div><button class="coreLiveRetry" id="coreLiveRetry" hidden>Prøv igen</button>`;
+  panel.innerHTML=`<div class="coreLiveHead"><strong>SHAKA CORE · LIVE READ-ONLY</strong><span class="coreLiveStatus" id="coreLiveStatus">Klar</span></div><dl class="coreLiveGrid"><div><dt>Asset Instance</dt><dd id="coreLiveInstance">—</dd></div><div><dt>Asset</dt><dd id="coreLiveAsset">—</dd></div><div><dt>System</dt><dd id="coreLiveHost">—</dd></div><div><dt>Slot / state</dt><dd id="coreLiveState">—</dd></div><div><dt>Provenance</dt><dd id="coreLiveProvenance">—</dd></div><div><dt>API</dt><dd>HTTPS · no-store</dd></div></dl><div class="coreLiveRelations"><b>Direkte relationer · tryk for at navigere</b><ul id="coreLiveRelations"><li>Åbn Niveau 4 for at hente live data.</li></ul></div><div class="coreNode" id="coreNode" hidden><div class="coreNodeHead"><b id="coreNodeTitle">Relation</b><button class="coreNodeClose" id="coreNodeClose" type="button">Luk</button></div><div class="coreNodeMeta" id="coreNodeMeta"></div></div><button class="coreLiveRetry" id="coreLiveRetry" hidden>Prøv igen</button>`;
 
   function placePanel(){
     const bodyHidden=getComputedStyle(infoBody).display==='none';
@@ -51,79 +51,45 @@
   const nodeEl=panel.querySelector('#coreNode');
   const nodeTitleEl=panel.querySelector('#coreNodeTitle');
   const nodeMetaEl=panel.querySelector('#coreNodeMeta');
-  const nodeOpenEl=panel.querySelector('#coreNodeOpen');
-  const nodeRelationsEl=panel.querySelector('#coreNodeRelations');
   const nodeCloseEl=panel.querySelector('#coreNodeClose');
   let loaded=false,loading=false;
-  let selectedNodeId=null;
   const setText=(id,value)=>{const el=panel.querySelector(`#${id}`);if(el)el.textContent=value??'—'};
   const setStatus=(kind,label)=>{statusEl.className=`coreLiveStatus ${kind||''}`.trim();statusEl.textContent=label};
-  const idOf=node=>node?.id||node?.public_id||node?.publicId||node?.key||'';
-  const labelOf=node=>node?.title||node?.name||node?.label||idOf(node)||'Ukendt objekt';
-  const kindOf=node=>node?.kind||node?.type||node?.object_type||node?.objectType||'objekt';
 
   function relatedId(edge,rootId){
-    const from=edge.from||edge.source||'';
-    const to=edge.to||edge.target||'';
-    if(from===rootId)return to;
-    if(to===rootId)return from;
-    return to||from;
+    if(edge.from===rootId)return edge.to;
+    if(edge.to===rootId)return edge.from;
+    return edge.to||edge.from||'';
   }
 
-  function showRelation(edge,node,rootId){
-    const relationType=edge.type||edge.relation_type||edge.relationType||'RELATION';
-    const from=edge.from||edge.source||'—';
-    const to=edge.to||edge.target||'—';
-    const targetId=relatedId(edge,rootId);
-    selectedNodeId=targetId;
-    nodeTitleEl.textContent=labelOf(node)||targetId;
-    nodeMetaEl.textContent=`${relationType} · ${from} → ${to} · ${kindOf(node)} · ${targetId}`;
-    nodeRelationsEl.hidden=true;
-    nodeRelationsEl.replaceChildren();
-    nodeOpenEl.hidden=!/^AI-/i.test(targetId||'');
-    nodeOpenEl.textContent='Åbn live nabo';
+  function relationDirection(edge,rootId){
+    if(edge.from===rootId)return 'Udgående';
+    if(edge.to===rootId)return 'Indgående';
+    return 'Relateret';
+  }
+
+  function showRelation(edge,rootId){
+    const targetId=relatedId(edge,rootId)||'—';
+    const direction=relationDirection(edge,rootId);
+    nodeTitleEl.textContent=targetId;
+    nodeMetaEl.textContent=`${direction} · ${edge.type||'RELATION'} · ${edge.from||'—'} → ${edge.to||'—'}`;
     nodeEl.hidden=false;
   }
 
-  function renderRelations(edges,nodes,rootId){
+  function renderRelations(edges,rootId){
     relationsEl.replaceChildren();
-    const nodeMap=new Map((nodes||[]).map(node=>[idOf(node),node]));
     if(!edges.length){const li=document.createElement('li');li.textContent='Ingen direkte relationer.';relationsEl.appendChild(li);return}
     for(const edge of edges){
-      const targetId=relatedId(edge,rootId);
-      const node=nodeMap.get(targetId)||{id:targetId};
-      const relationType=edge.type||edge.relation_type||edge.relationType||'RELATION';
+      const targetId=relatedId(edge,rootId)||'—';
+      const direction=relationDirection(edge,rootId);
       const li=document.createElement('li');
       const button=document.createElement('button');
       button.type='button';button.className='coreRelationButton';
-      button.textContent=`${relationType} · ${labelOf(node)}`;
-      const meta=document.createElement('span');meta.textContent=`${kindOf(node)} · ${targetId}`;button.appendChild(meta);
-      button.addEventListener('click',()=>showRelation(edge,node,rootId));
+      button.textContent=`${direction} · ${edge.type||'RELATION'}`;
+      const meta=document.createElement('span');meta.textContent=targetId;button.appendChild(meta);
+      button.addEventListener('click',()=>showRelation(edge,rootId));
       li.appendChild(button);relationsEl.appendChild(li);
     }
-  }
-
-  async function openRelatedNode(){
-    if(!selectedNodeId||!/^AI-/i.test(selectedNodeId))return;
-    nodeOpenEl.disabled=true;nodeOpenEl.textContent='Henter…';nodeRelationsEl.hidden=true;
-    try{
-      const result=await window.ShakaCore.loadAssetInstance(selectedNodeId);
-      const data=result.detail||{};
-      const graph=result.graph||{};
-      nodeTitleEl.textContent=data.id||selectedNodeId;
-      nodeMetaEl.textContent=`Asset ${data.asset?.id||'—'} · System ${data.host?.id||'—'} · ${[data.slot,data.state].filter(Boolean).join(' · ')||'state ukendt'}`;
-      const edges=graph.edges||[];
-      nodeRelationsEl.replaceChildren();
-      if(!edges.length){const li=document.createElement('li');li.textContent='Ingen direkte relationer.';nodeRelationsEl.appendChild(li)}
-      for(const edge of edges){const li=document.createElement('li');li.textContent=`${edge.type||'RELATION'}: ${edge.from||edge.source||'—'} → ${edge.to||edge.target||'—'}`;nodeRelationsEl.appendChild(li)}
-      nodeRelationsEl.hidden=false;nodeOpenEl.textContent='Live nabo åbnet';
-    }catch(error){
-      const detail=error instanceof Error&&error.message?error.message:'Ukendt browserfejl';
-      nodeMetaEl.textContent=`Live nabo kunne ikke åbnes: ${detail}`;
-      nodeOpenEl.textContent='Prøv igen';nodeOpenEl.disabled=false;
-      return;
-    }
-    nodeOpenEl.disabled=false;
   }
 
   async function loadCore(){
@@ -133,7 +99,7 @@
       const result=await window.ShakaCore.loadAssetInstance(INSTANCE_ID);const data=result.detail;
       setText('coreLiveInstance',data.id);setText('coreLiveAsset',data.asset?.id);setText('coreLiveHost',data.host?.id);setText('coreLiveState',[data.slot,data.state].filter(Boolean).join(' · '));
       setText('coreLiveProvenance',Array.isArray(data.provenance)?`${data.provenance.length} records · ${new Set(data.provenance.map(item=>item.source)).size} kilder`:'—');
-      renderRelations(result.graph.edges||[],result.graph.nodes||[],result.graph.rootId||INSTANCE_ID);setStatus('ok','Live');loaded=true;
+      renderRelations(result.graph.edges||[],result.graph.rootId||INSTANCE_ID);setStatus('ok','Live');loaded=true;
     }catch(error){
       console.error('Shaka Core unavailable',error);
       const detail=error instanceof Error&&error.message?error.message:'Ukendt browserfejl';
@@ -145,7 +111,6 @@
   }
   function maybeLoad(){placePanel();if(!assemblyScreen.hidden&&!loaded)loadCore()}
   retryEl.addEventListener('click',loadCore);
-  nodeOpenEl.addEventListener('click',openRelatedNode);
-  nodeCloseEl.addEventListener('click',()=>{nodeEl.hidden=true;selectedNodeId=null});
+  nodeCloseEl.addEventListener('click',()=>{nodeEl.hidden=true});
   new MutationObserver(maybeLoad).observe(assemblyScreen,{attributes:true,attributeFilter:['hidden']});window.addEventListener('resize',placePanel);window.addEventListener('orientationchange',()=>setTimeout(placePanel,0));maybeLoad();
 })();
