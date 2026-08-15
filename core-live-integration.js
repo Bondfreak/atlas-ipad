@@ -25,7 +25,7 @@
     .coreLiveRelations{margin-top:7px;padding-top:7px;border-top:1px solid #e7ecef;font-size:9px;line-height:1.4}.coreLiveRelations b{display:block;margin-bottom:5px;color:#14212b;font-size:9px}
     .coreLiveRelations ul{display:grid;gap:4px;margin:0;padding:0;list-style:none}.coreLiveRelations li{margin:0}
     .coreRelationButton{width:100%;border:1px solid #dfe6ec;border-radius:7px;background:#fff;padding:6px 7px;text-align:left;color:#14212b;font:inherit;font-size:9px;cursor:pointer}.coreRelationButton:active{background:#eef4f8}.coreRelationButton span{display:block;margin-top:2px;color:#73808b;font-size:8px;overflow-wrap:anywhere}
-    .coreNode{margin-top:7px;padding:8px;border:1px solid #d8e2e9;border-radius:8px;background:#fff}.coreNode[hidden]{display:none}.coreNodeHead{display:flex;gap:8px;align-items:flex-start}.coreNodeHead b{color:#14212b;font-size:9px;line-height:1.35}.coreNodeClose{margin-left:auto;border:0;background:transparent;color:#73808b;font-size:9px;cursor:pointer}.coreNodeMeta{margin-top:5px;color:#5f6d77;font-size:8.5px;line-height:1.45;overflow-wrap:anywhere}.coreNodeMeta strong{color:#14212b}.coreLiveRetry{margin-top:8px;border:0;border-radius:7px;background:#0867ff;color:#fff;padding:6px 9px;font:inherit;font-size:9px;font-weight:700;cursor:pointer}.coreLiveRetry[hidden]{display:none}
+    .coreNode{margin-top:7px;padding:8px;border:1px solid #d8e2e9;border-radius:8px;background:#fff}.coreNode[hidden]{display:none}.coreNodeHead{display:flex;gap:8px;align-items:flex-start}.coreNodeHead b{color:#14212b;font-size:9px;line-height:1.35}.coreNodeClose{margin-left:auto;border:0;background:transparent;color:#73808b;font-size:9px;cursor:pointer}.coreNodeMeta{margin-top:5px;color:#5f6d77;font-size:8.5px;line-height:1.45;overflow-wrap:anywhere;white-space:pre-line}.coreLiveRetry{margin-top:8px;border:0;border-radius:7px;background:#0867ff;color:#fff;padding:6px 9px;font:inherit;font-size:9px;font-weight:700;cursor:pointer}.coreLiveRetry[hidden]{display:none}
   `;
   document.head.appendChild(style);
 
@@ -89,7 +89,13 @@
       const data=result.detail||{};
       const provenance=Array.isArray(data.provenance)?`${data.provenance.length} provenance records`:'provenance ukendt';
       nodeTitleEl.textContent=data.id||assetId;
-      nodeMetaEl.innerHTML=`<strong>${direction} · ${edge.type||'RELATION'}</strong><br>Asset: ${data.asset?.id||assetId}<br>System: ${data.host?.id||'—'}<br>Slot / state: ${[data.slot,data.state].filter(Boolean).join(' · ')||'—'}<br>${provenance}`;
+      nodeMetaEl.textContent=[
+        `${direction} · ${edge.type||'RELATION'}`,
+        `Asset: ${data.asset?.id||assetId}`,
+        `System: ${data.host?.id||'—'}`,
+        `Slot / state: ${[data.slot,data.state].filter(Boolean).join(' · ')||'—'}`,
+        provenance
+      ].join('\n');
     }catch(error){
       console.error('Shaka Core asset resolution unavailable',error);
       const detail=error instanceof Error&&error.message?error.message:'Ukendt browserfejl';
