@@ -1,4 +1,4 @@
-const CACHE = "atlas-ipad-alpha-v0.3.20";
+const CACHE = "atlas-ipad-alpha-v0.3.21";
 const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
 const CORE_ORIGIN = "https://shaka-core-app.onrender.com";
 const CORE_SCRIPTS = '<script src="./shaka-core-client.js"></script><script src="./core-live-integration.js"></script>';

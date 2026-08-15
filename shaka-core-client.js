@@ -14,10 +14,8 @@
     if(!instanceId)throw new Error('instanceId is required');
     const base=(options.baseUrl||DEFAULT_BASE).replace(/\/$/,'');
     const encoded=encodeURIComponent(instanceId);
-    const [detail,graph]=await Promise.all([
-      requestJson(`${base}/api/v1/asset-instances/${encoded}`),
-      requestJson(`${base}/api/v1/asset-instances/${encoded}/graph?depth=${DEPTH}`)
-    ]);
+    const detail=await requestJson(`${base}/api/v1/asset-instances/${encoded}`);
+    const graph=await requestJson(`${base}/api/v1/asset-instances/${encoded}/graph?depth=${DEPTH}`);
     if(graph.meta?.depth!==undefined&&graph.meta.depth!==DEPTH)throw new Error('Unexpected Shaka Core graph depth');
     return {
       detail:detail.data||{},
