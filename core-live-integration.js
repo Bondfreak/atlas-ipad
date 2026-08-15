@@ -2,7 +2,7 @@
   'use strict';
 
   const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
-  const VERSION='v0.3.24';
+  const VERSION='v0.3.25';
   const assemblyScreen=document.getElementById('assemblyScreen');
   const assemblyInfo=assemblyScreen?.querySelector('.assemblyInfo');
   const infoTop=assemblyScreen?.querySelector('.assemblyInfoTop');
@@ -10,7 +10,7 @@
   if(!assemblyScreen||!assemblyInfo||!infoTop||!infoBody)return;
 
   document.querySelectorAll('.topbar .status').forEach(el=>{
-    el.textContent=el.textContent.replace(/Atlas v0\.3\.(?:18|19|20|21|22|23)/g,`Atlas ${VERSION}`);
+    el.textContent=el.textContent.replace(/Atlas v0\.3\.(?:18|19|20|21|22|23|24)/g,`Atlas ${VERSION}`);
   });
 
   const style=document.createElement('style');
@@ -76,10 +76,8 @@
     nodeEl.hidden=false;
   }
 
-  async function showResolvedRelation(edge,rootId){
-    const assetId=relatedId(edge,rootId)||'';
+  async function showAssetRelation(edge,rootId,assetId){
     const direction=relationDirection(edge,rootId);
-    if(!assetId.startsWith('ASSET-')){showStaticRelation(edge,rootId);return}
     nodeTitleEl.textContent=assetId;
     nodeMetaEl.textContent='Resolver installeret Asset Instance…';
     nodeEl.hidden=false;
@@ -104,6 +102,39 @@
     }
   }
 
+  async function showObjectRelation(edge,rootId,publicId){
+    const direction=relationDirection(edge,rootId);
+    nodeTitleEl.textContent=publicId;
+    nodeMetaEl.textContent='Henter Core-detail…';
+    nodeEl.hidden=false;
+    try{
+      if(!window.ShakaCore?.loadObjectDetail)throw new Error('Core object-klienten mangler');
+      const result=await window.ShakaCore.loadObjectDetail(publicId);
+      const data=result.detail||{};
+      const provenance=Array.isArray(data.provenance)?`${data.provenance.length} provenance records`:'provenance ukendt';
+      nodeTitleEl.textContent=data.name?`${data.name} · ${data.id||publicId}`:(data.id||publicId);
+      nodeMetaEl.textContent=[
+        `${direction} · ${edge.type||'RELATION'}`,
+        `Type: ${data.type||'—'}`,
+        `Vessel: ${data.vessel?.id||'—'}`,
+        `Parent: ${data.parent?.id||'—'}`,
+        provenance
+      ].join('\n');
+    }catch(error){
+      console.error('Shaka Core object detail unavailable',error);
+      const detail=error instanceof Error&&error.message?error.message:'Ukendt browserfejl';
+      nodeTitleEl.textContent=publicId;
+      nodeMetaEl.textContent=`Kunne ikke hente Core-detail · ${detail}`;
+    }
+  }
+
+  function showNavigatedRelation(edge,rootId){
+    const targetId=relatedId(edge,rootId)||'';
+    if(targetId.startsWith('ASSET-')){showAssetRelation(edge,rootId,targetId);return}
+    if(targetId.startsWith('SYS-')||targetId.startsWith('LOC-')){showObjectRelation(edge,rootId,targetId);return}
+    showStaticRelation(edge,rootId);
+  }
+
   function renderRelations(edges,rootId){
     relationsEl.replaceChildren();
     if(!edges.length){const li=document.createElement('li');li.textContent='Ingen direkte relationer.';relationsEl.appendChild(li);return}
@@ -115,7 +146,7 @@
       button.type='button';button.className='coreRelationButton';
       button.textContent=`${direction} · ${edge.type||'RELATION'}`;
       const meta=document.createElement('span');meta.textContent=targetId;button.appendChild(meta);
-      button.addEventListener('click',()=>showResolvedRelation(edge,rootId));
+      button.addEventListener('click',()=>showNavigatedRelation(edge,rootId));
       li.appendChild(button);relationsEl.appendChild(li);
     }
   }
