@@ -2,6 +2,7 @@
   'use strict';
 
   const DEFAULT_BASE='https://shaka-core-app.onrender.com';
+  const DEPTH=1;
 
   async function requestJson(url){
     const response=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store'});
@@ -15,8 +16,9 @@
     const encoded=encodeURIComponent(instanceId);
     const [detail,graph]=await Promise.all([
       requestJson(`${base}/api/v1/asset-instances/${encoded}`),
-      requestJson(`${base}/api/v1/asset-instances/${encoded}/graph?depth=1`)
+      requestJson(`${base}/api/v1/asset-instances/${encoded}/graph?depth=${DEPTH}`)
     ]);
+    if(graph.meta?.depth!==undefined&&graph.meta.depth!==DEPTH)throw new Error('Unexpected Shaka Core graph depth');
     return {
       detail:detail.data||{},
       graph:graph.data||{rootId:instanceId,nodes:[],edges:[]},
@@ -26,6 +28,7 @@
 
   global.ShakaCore=Object.freeze({
     baseUrl:DEFAULT_BASE,
+    depth:DEPTH,
     loadAssetInstance
   });
 })(window);
