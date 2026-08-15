@@ -1,7 +1,6 @@
 (()=>{
   'use strict';
 
-  const CORE_BASE='https://shaka-core-app.onrender.com';
   const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
   const VERSION='v0.3.19';
   const assemblyScreen=document.getElementById('assemblyScreen');
@@ -60,11 +59,6 @@
 
   const setText=(id,value)=>{const el=panel.querySelector(`#${id}`);if(el)el.textContent=value??'—'};
   const setStatus=(kind,label)=>{statusEl.className=`coreLiveStatus ${kind||''}`.trim();statusEl.textContent=label};
-  async function json(url){
-    const response=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store'});
-    if(!response.ok)throw new Error(`HTTP ${response.status}`);
-    return response.json();
-  }
   function renderRelations(edges){
     relationsEl.replaceChildren();
     if(!edges.length){const li=document.createElement('li');li.textContent='Ingen direkte relationer.';relationsEl.appendChild(li);return}
@@ -74,18 +68,15 @@
     if(loading)return;
     loading=true;retryEl.hidden=true;setStatus('','Forbinder…');relationsEl.innerHTML='<li>Indlæser…</li>';
     try{
-      const encoded=encodeURIComponent(INSTANCE_ID);
-      const [detail,graph]=await Promise.all([
-        json(`${CORE_BASE}/api/v1/asset-instances/${encoded}`),
-        json(`${CORE_BASE}/api/v1/asset-instances/${encoded}/graph?depth=1`)
-      ]);
-      const data=detail.data||{};
+      if(!window.ShakaCore)throw new Error('Shaka Core client unavailable');
+      const result=await window.ShakaCore.loadAssetInstance(INSTANCE_ID);
+      const data=result.detail;
       setText('coreLiveInstance',data.id);
       setText('coreLiveAsset',data.asset?.id);
       setText('coreLiveHost',data.host?.id);
       setText('coreLiveState',[data.slot,data.state].filter(Boolean).join(' · '));
       setText('coreLiveProvenance',Array.isArray(data.provenance)?`${data.provenance.length} records · ${new Set(data.provenance.map(item=>item.source)).size} kilder`:'—');
-      renderRelations(graph.data?.edges||[]);
+      renderRelations(result.graph.edges||[]);
       setStatus('ok','Live');
       loaded=true;
     }catch(error){
