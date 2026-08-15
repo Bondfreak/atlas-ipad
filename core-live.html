@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f9fb">
+<title>Atlas · Live Shaka Core · EPF-0032</title>
+<style>
+:root{--blue:#0867ff;--navy:#0d2130;--ink:#14212b;--muted:#73808b;--line:#dfe6ec;--soft:#f4f7f9;--white:#fff;--green:#228653;--red:#9b3425}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--soft);color:var(--ink)}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}.shell{width:min(900px,100%);margin:0 auto}.top{display:flex;align-items:center;gap:14px;margin-bottom:18px}.back{color:var(--blue);text-decoration:none;font-weight:650}.title{margin-left:auto;text-align:right}.title small{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}.title strong{font-size:14px}.card{background:var(--white);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(13,33,48,.06)}.head{background:var(--navy);color:#fff;padding:22px}.head small{font-size:10px;letter-spacing:.13em;text-transform:uppercase;opacity:.7}.head h1{margin:7px 0 5px;font-size:24px}.head p{margin:0;opacity:.8;font-size:13px}.body{padding:20px}.status{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:#eef3f7;color:#53616b;font-size:11px}.status::before{content:"";width:7px;height:7px;border-radius:50%;background:#8d99a2}.status.ok{background:#eaf8f0;color:var(--green)}.status.ok::before{background:#33b56c}.status.error{background:#fff0ed;color:var(--red)}.status.error::before{background:#d9513f}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;margin-top:18px}.item{padding:12px 0;border-top:1px solid var(--line)}.item dt{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}.item dd{margin:5px 0 0;font-size:13px;overflow-wrap:anywhere}.section{margin-top:22px}.section h2{font-size:13px;margin:0 0 8px}.relations{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}.relations li{padding:11px 0;border-bottom:1px solid var(--line);font-size:12px;line-height:1.4}.type{display:inline-block;margin-right:8px;padding:3px 6px;border-radius:5px;background:#edf5ff;color:#195cae;font-size:9px;font-weight:700}.note{margin-top:18px;padding:12px;border-radius:10px;background:var(--soft);color:#596772;font-size:11px;line-height:1.45}.retry{margin-top:14px;min-height:40px;padding:0 16px;border:0;border-radius:9px;background:var(--blue);color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.retry[hidden]{display:none}@media(max-width:620px){.grid{grid-template-columns:1fr}.title strong{font-size:12px}.head h1{font-size:21px}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="top"><a class="back" href="./">← Atlas</a><div class="title"><small>Live Core proof · shared client</small><strong>EPA-0005 / EPF-0032</strong></div></div>
+  <article class="card">
+    <header class="head"><small>Shaka Core · read-only</small><h1>Søvandsfilter &amp; pumpe</h1><p>Bagbord søvandspumpeinstallation · live data fra Shaka Core</p></header>
+    <div class="body">
+      <div class="status" id="coreStatus">Forbinder til Shaka Core…</div>
+      <dl class="grid">
+        <div class="item"><dt>Asset Instance</dt><dd id="instanceId">—</dd></div>
+        <div class="item"><dt>Asset / produktreference</dt><dd id="assetId">—</dd></div>
+        <div class="item"><dt>Systemkontekst</dt><dd id="hostId">—</dd></div>
+        <div class="item"><dt>Placering / slot</dt><dd id="slot">—</dd></div>
+        <div class="item"><dt>Tilstand</dt><dd id="state">—</dd></div>
+        <div class="item"><dt>Provenance-kilder</dt><dd id="provenance">—</dd></div>
+      </dl>
+      <section class="section"><h2>Direkte relationer · depth 1</h2><ul class="relations" id="relations"><li>Indlæser…</li></ul></section>
+      <div class="note" id="note">Denne side er en afgrænset integrationstest. Atlas' eksisterende statiske indhold ændres ikke, og API-fejl må ikke blokere resten af Atlas.</div>
+      <button class="retry" id="retry" hidden>Prøv igen</button>
+    </div>
+  </article>
+</main>
+<script src="./shaka-core-client.js"></script>
+<script>
+const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
+const statusEl=document.getElementById('coreStatus');
+const retryEl=document.getElementById('retry');
+const relationsEl=document.getElementById('relations');
+
+function text(id,value){document.getElementById(id).textContent=value??'—'}
+function setStatus(kind,label){statusEl.className=`status ${kind||''}`.trim();statusEl.textContent=label}
+function renderRelations(edges){relationsEl.replaceChildren();if(!edges.length){const li=document.createElement('li');li.textContent='Ingen direkte relationer.';relationsEl.appendChild(li);return}for(const edge of edges){const li=document.createElement('li');const type=document.createElement('span');type.className='type';type.textContent=edge.type;li.append(type,document.createTextNode(`${edge.from} → ${edge.to}`));relationsEl.appendChild(li)}}
+async function loadCore(){retryEl.hidden=true;setStatus('', 'Forbinder til Shaka Core…');relationsEl.innerHTML='<li>Indlæser…</li>';try{const result=await ShakaCore.loadAssetInstance(INSTANCE_ID);const data=result.detail;text('instanceId',data.id);text('assetId',data.asset?.id);text('hostId',data.host?.id);text('slot',data.slot);text('state',data.state);text('provenance',Array.isArray(data.provenance)?`${data.provenance.length} records · ${new Set(data.provenance.map(item=>item.source)).size} kilder`:'—');renderRelations(result.graph.edges||[]);setStatus('ok','Shaka Core live · read-only');document.getElementById('note').textContent='Live detail og graph blev hentet direkte fra Shaka Core over HTTPS. API-svar cachelagres ikke af denne side.'}catch(error){console.error('Shaka Core unavailable',error);setStatus('error','Core utilgængelig · Atlas fortsætter statisk');relationsEl.innerHTML='<li>Live relationer kunne ikke hentes.</li>';document.getElementById('note').textContent='Shaka Core kunne ikke kontaktes. Det påvirker ikke Atlas’ eksisterende statiske navigation eller indhold.';retryEl.hidden=false}}
+retryEl.addEventListener('click',loadCore);
+loadCore();
+</script>
+</body>
+</html>
