@@ -2,7 +2,7 @@
   'use strict';
 
   const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
-  const VERSION='v0.3.25';
+  const VERSION='v0.3.26';
   const assemblyScreen=document.getElementById('assemblyScreen');
   const assemblyInfo=assemblyScreen?.querySelector('.assemblyInfo');
   const infoTop=assemblyScreen?.querySelector('.assemblyInfoTop');
@@ -10,7 +10,7 @@
   if(!assemblyScreen||!assemblyInfo||!infoTop||!infoBody)return;
 
   document.querySelectorAll('.topbar .status').forEach(el=>{
-    el.textContent=el.textContent.replace(/Atlas v0\.3\.(?:18|19|20|21|22|23|24)/g,`Atlas ${VERSION}`);
+    el.textContent=el.textContent.replace(/Atlas v0\.3\.(?:18|19|20|21|22|23|24|25)/g,`Atlas ${VERSION}`);
   });
 
   const style=document.createElement('style');
