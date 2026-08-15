@@ -1,4 +1,4 @@
-const CACHE = "shaka-ui-sip-m06-v1";
+const CACHE = "atlas-ipad-alpha-v0.3.26";
 const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
 const SERVER_ORIGIN = "https://shaka-server.onrender.com";
 const CORE_CLIENT = '<script src="./shaka-core-client.js"></script>';
