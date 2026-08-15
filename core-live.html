@@ -31,8 +31,8 @@
     </div>
   </article>
 </main>
+<script src="./shaka-core-client.js"></script>
 <script>
-const CORE_BASE='https://shaka-core-app.onrender.com';
 const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
 const statusEl=document.getElementById('coreStatus');
 const retryEl=document.getElementById('retry');
@@ -40,9 +40,8 @@ const relationsEl=document.getElementById('relations');
 
 function text(id,value){document.getElementById(id).textContent=value??'—'}
 function setStatus(kind,label){statusEl.className=`status ${kind||''}`.trim();statusEl.textContent=label}
-async function json(url){const response=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store'});if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.json()}
 function renderRelations(edges){relationsEl.replaceChildren();if(!edges.length){const li=document.createElement('li');li.textContent='Ingen direkte relationer.';relationsEl.appendChild(li);return}for(const edge of edges){const li=document.createElement('li');const type=document.createElement('span');type.className='type';type.textContent=edge.type;li.append(type,document.createTextNode(`${edge.from} → ${edge.to}`));relationsEl.appendChild(li)}}
-async function loadCore(){retryEl.hidden=true;setStatus('', 'Forbinder til Shaka Core…');relationsEl.innerHTML='<li>Indlæser…</li>';try{const encoded=encodeURIComponent(INSTANCE_ID);const [detail,graph]=await Promise.all([json(`${CORE_BASE}/api/v1/asset-instances/${encoded}`),json(`${CORE_BASE}/api/v1/asset-instances/${encoded}/graph?depth=1`)]);const data=detail.data||{};text('instanceId',data.id);text('assetId',data.asset?.id);text('hostId',data.host?.id);text('slot',data.slot);text('state',data.state);text('provenance',Array.isArray(data.provenance)?`${data.provenance.length} records · ${new Set(data.provenance.map(item=>item.source)).size} kilder`:'—');renderRelations(graph.data?.edges||[]);setStatus('ok','Shaka Core live · read-only');document.getElementById('note').textContent='Live detail og graph blev hentet direkte fra Shaka Core over HTTPS. API-svar cachelagres ikke af denne side.'}catch(error){console.error('Shaka Core unavailable',error);setStatus('error','Core utilgængelig · Atlas fortsætter statisk');relationsEl.innerHTML='<li>Live relationer kunne ikke hentes.</li>';document.getElementById('note').textContent='Shaka Core kunne ikke kontaktes. Det påvirker ikke Atlas’ eksisterende statiske navigation eller indhold.';retryEl.hidden=false}}
+async function loadCore(){retryEl.hidden=true;setStatus('', 'Forbinder til Shaka Core…');relationsEl.innerHTML='<li>Indlæser…</li>';try{const result=await ShakaCore.loadAssetInstance(INSTANCE_ID);const data=result.detail;text('instanceId',data.id);text('assetId',data.asset?.id);text('hostId',data.host?.id);text('slot',data.slot);text('state',data.state);text('provenance',Array.isArray(data.provenance)?`${data.provenance.length} records · ${new Set(data.provenance.map(item=>item.source)).size} kilder`:'—');renderRelations(result.graph.edges||[]);setStatus('ok','Shaka Core live · read-only');document.getElementById('note').textContent='Live detail og graph blev hentet direkte fra Shaka Core over HTTPS. API-svar cachelagres ikke af denne side.'}catch(error){console.error('Shaka Core unavailable',error);setStatus('error','Core utilgængelig · Atlas fortsætter statisk');relationsEl.innerHTML='<li>Live relationer kunne ikke hentes.</li>';document.getElementById('note').textContent='Shaka Core kunne ikke kontaktes. Det påvirker ikke Atlas’ eksisterende statiske navigation eller indhold.';retryEl.hidden=false}}
 retryEl.addEventListener('click',loadCore);
 loadCore();
 </script>
