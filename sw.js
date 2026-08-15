@@ -1,7 +1,8 @@
-const CACHE = "atlas-ipad-alpha-v0.3.21";
+const CACHE = "atlas-ipad-alpha-v0.3.22";
 const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
 const CORE_ORIGIN = "https://shaka-core-app.onrender.com";
-const CORE_SCRIPTS = '<script src="./shaka-core-client.js"></script><script src="./core-live-integration.js"></script>';
+const CORE_CLIENT = '<script src="./shaka-core-client.js"></script>';
+const CORE_INTEGRATION = '<script src="./core-live-integration.js"></script>';
 
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
@@ -20,8 +21,11 @@ function isAtlasDocument(request){
 }
 
 async function injectCoreIntegration(response){
-  const text=await response.text();
-  const body=text.includes('core-live-integration.js')?text:text.replace("</body>",`${CORE_SCRIPTS}\n</body>`);
+  let body=await response.text();
+  const scripts=[];
+  if(!body.includes('shaka-core-client.js'))scripts.push(CORE_CLIENT);
+  if(!body.includes('core-live-integration.js'))scripts.push(CORE_INTEGRATION);
+  if(scripts.length)body=body.replace("</body>",`${scripts.join('')}\n</body>`);
   const headers=new Headers(response.headers);
   headers.delete("content-length");
   return new Response(body,{status:response.status,statusText:response.statusText,headers});
