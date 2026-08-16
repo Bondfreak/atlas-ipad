@@ -10,6 +10,7 @@ class M07DeterministicFlowTests(unittest.TestCase):
     def setUp(self):
         self.flow = (ROOT / "m07-deterministic-flow.js").read_text(encoding="utf-8")
         self.worker = (ROOT / "sw.js").read_text(encoding="utf-8")
+        self.version = (ROOT / "m07-version.js").read_text(encoding="utf-8")
 
     def test_flow_uses_existing_server_mediated_client_only(self):
         self.assertIn("window.ShakaCore.loadAssetInstance", self.flow)
@@ -62,6 +63,11 @@ class M07DeterministicFlowTests(unittest.TestCase):
         self.assertIn('"./m07-version.js"', self.worker)
         self.assertIn(SERVER_ORIGIN, self.worker)
         self.assertNotIn(CORE_ORIGIN, self.worker)
+
+    def test_visible_version_and_service_worker_cache_are_synchronized(self):
+        self.assertIn("const VERSION='v0.3.28'", self.version)
+        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.28"', self.worker)
+        self.assertNotIn("atlas-ipad-alpha-v0.3.27", self.worker)
 
 
 if __name__ == "__main__":
