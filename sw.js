@@ -1,10 +1,11 @@
-const CACHE = "atlas-ipad-alpha-v0.3.28";
-const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./m07-deterministic-flow.js","./m07-version.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
+const CACHE = "atlas-ipad-alpha-v0.3.29";
+const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./m07-deterministic-flow.js","./m07-version.js","./m08-kai-info.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
 const SERVER_ORIGIN = "https://shaka-server.onrender.com";
 const CORE_CLIENT = '<script src="./shaka-core-client.js"></script>';
 const CORE_INTEGRATION = '<script src="./core-live-integration.js"></script>';
 const M07_FLOW = '<script src="./m07-deterministic-flow.js"></script>';
 const M07_VERSION = '<script src="./m07-version.js"></script>';
+const M08_KAI = '<script src="./m08-kai-info.js"></script>';
 
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
@@ -29,6 +30,7 @@ async function injectCoreIntegration(response){
   if(!body.includes('core-live-integration.js'))scripts.push(CORE_INTEGRATION);
   if(!body.includes('m07-deterministic-flow.js'))scripts.push(M07_FLOW);
   if(!body.includes('m07-version.js'))scripts.push(M07_VERSION);
+  if(!body.includes('m08-kai-info.js'))scripts.push(M08_KAI);
   if(scripts.length)body=body.replace("</body>",`${scripts.join('')}\n</body>`);
   const headers=new Headers(response.headers);
   headers.delete("content-length");
