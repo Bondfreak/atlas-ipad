@@ -4,12 +4,14 @@
   const SERVER_ORIGIN='https://shaka-server.onrender.com';
   const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
   const assemblyScreen=document.getElementById('assemblyScreen');
+  const assemblyInfo=assemblyScreen?.querySelector('.assemblyInfo');
   const infoBody=assemblyScreen?.querySelector('.assemblyInfoBody');
-  if(!assemblyScreen||!infoBody)return;
+  if(!assemblyScreen||!assemblyInfo||!infoBody)return;
 
   const style=document.createElement('style');
   style.textContent=`
     .kaiInfo{margin:12px 0 0;padding:11px;border:1px solid #dfe6ec;border-radius:10px;background:#f8fafb;color:#4e5b65}
+    .assemblyInfo>.kaiInfo{margin:8px 12px 10px}
     .kaiInfoHead{display:flex;align-items:center;gap:8px}.kaiInfoHead strong{font-size:10px;color:#14212b;letter-spacing:.04em}.kaiInfoState{margin-left:auto;font-size:9px;color:#73808b}
     .kaiInfoText{margin:9px 0 0;font-size:10px;line-height:1.5;white-space:pre-line}.kaiInfoEvidence{margin:7px 0 0;color:#73808b;font-size:8.5px;line-height:1.4}
     .kaiInfoButton{margin-top:9px;width:100%;min-height:34px;border:0;border-radius:8px;background:#0867ff;color:#fff;font-size:10px;font-weight:700;cursor:pointer}.kaiInfoButton:disabled{opacity:.55;cursor:default}
@@ -20,7 +22,16 @@
   panel.className='kaiInfo';
   panel.setAttribute('aria-label','KAI forklaring');
   panel.innerHTML='<div class="kaiInfoHead"><strong>KAI · GROUNDED READ-ONLY</strong><span class="kaiInfoState">Klar</span></div><p class="kaiInfoText">KAI kan forklare den valgte Core-kontekst gennem Server-kontrollerede read-only tools.</p><p class="kaiInfoEvidence"></p><button class="kaiInfoButton" type="button">Forklar denne kontekst</button>';
-  infoBody.appendChild(panel);
+
+  function placePanel(){
+    const bodyHidden=getComputedStyle(infoBody).display==='none';
+    if(bodyHidden){
+      if(panel.parentElement!==assemblyInfo)assemblyInfo.insertBefore(panel,infoBody);
+    }else if(panel.parentElement!==infoBody){
+      infoBody.appendChild(panel);
+    }
+  }
+  placePanel();
 
   const stateEl=panel.querySelector('.kaiInfoState');
   const textEl=panel.querySelector('.kaiInfoText');
@@ -68,4 +79,6 @@
   }
 
   buttonEl.addEventListener('click',explain);
+  window.addEventListener('resize',placePanel);
+  window.addEventListener('orientationchange',()=>setTimeout(placePanel,0));
 })();

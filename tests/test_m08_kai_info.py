@@ -39,15 +39,21 @@ class M08KaiInfoTests(unittest.TestCase):
         self.assertIn("Atlas-navigation og Core-visualisering virker fortsat uden KAI", self.kai)
         self.assertIn("Ingen forklaring vises uden et gyldigt grounded Server-svar", self.kai)
 
+    def test_portrait_layout_moves_kai_out_of_hidden_info_body(self):
+        self.assertIn("const assemblyInfo=assemblyScreen?.querySelector('.assemblyInfo')", self.kai)
+        self.assertIn("getComputedStyle(infoBody).display==='none'", self.kai)
+        self.assertIn("assemblyInfo.insertBefore(panel,infoBody)", self.kai)
+        self.assertIn("window.addEventListener('orientationchange'", self.kai)
+
     def test_worker_caches_and_injects_m08_script(self):
         self.assertIn('"./m08-kai-info.js"', self.worker)
         self.assertIn("const M08_KAI", self.worker)
         self.assertIn("if(!body.includes('m08-kai-info.js'))scripts.push(M08_KAI)", self.worker)
         self.assertNotIn(CORE_ORIGIN, self.worker)
 
-    def test_v029_version_and_cache_are_synchronized(self):
-        self.assertIn("const VERSION='v0.3.29'", self.version)
-        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.29"', self.worker)
+    def test_v030_version_and_cache_are_synchronized(self):
+        self.assertIn("const VERSION='v0.3.30'", self.version)
+        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.30"', self.worker)
 
 
 if __name__ == "__main__":
