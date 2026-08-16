@@ -4,8 +4,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 CORE_ORIGIN = "https://shaka-core-app.onrender.com"
 SERVER_ORIGIN = "https://shaka-server.onrender.com"
-VERSION = "v0.3.26"
-CACHE = "atlas-ipad-alpha-v0.3.26"
+VERSION = "v0.3.27"
+CACHE = "atlas-ipad-alpha-v0.3.27"
 
 
 class M06RoutingTests(unittest.TestCase):
@@ -28,9 +28,9 @@ class M06RoutingTests(unittest.TestCase):
         self.assertIn('const SERVER_ORIGIN =', worker)
 
     def test_visible_version_and_cache_are_aligned(self):
-        integration = (ROOT / "core-live-integration.js").read_text(encoding="utf-8")
+        version = (ROOT / "m07-version.js").read_text(encoding="utf-8")
         worker = (ROOT / "sw.js").read_text(encoding="utf-8")
-        self.assertIn(f"const VERSION='{VERSION}'", integration)
+        self.assertIn(f"const VERSION='{VERSION}'", version)
         self.assertIn(f'const CACHE = "{CACHE}"', worker)
 
     def test_normal_ui_integration_has_no_direct_core_host(self):
