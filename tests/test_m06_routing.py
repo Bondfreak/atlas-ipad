@@ -4,8 +4,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 CORE_ORIGIN = "https://shaka-core-app.onrender.com"
 SERVER_ORIGIN = "https://shaka-server.onrender.com"
-VERSION = "v0.3.27"
-CACHE = "atlas-ipad-alpha-v0.3.27"
+VERSION = "v0.3.28"
+CACHE = "atlas-ipad-alpha-v0.3.28"
 
 
 class M06RoutingTests(unittest.TestCase):
