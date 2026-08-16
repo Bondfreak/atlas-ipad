@@ -3,6 +3,7 @@
 
   const ROOT_INSTANCE_ID='AI-D4-BB-SeaWaterPump';
   const FLOW_RELATION='FLOW_TO';
+  const ACCEPTANCE_MODE=new URLSearchParams(window.location.search).get('m07Acceptance');
   const assemblyScreen=document.getElementById('assemblyScreen');
   const assemblyInfo=assemblyScreen?.querySelector('.assemblyInfo');
   if(!assemblyScreen||!assemblyInfo)return;
@@ -39,6 +40,14 @@
 
   function flowEdges(graph,rootId){
     return (graph.edges||[]).filter(edge=>edge?.type===FLOW_RELATION&&(edge.from===rootId||edge.to===rootId));
+  }
+
+  function acceptanceGraph(graph,rootId){
+    if(ACCEPTANCE_MODE!=='missing-flow')return graph;
+    return {
+      ...graph,
+      edges:(graph.edges||[]).filter(edge=>!(edge?.type===FLOW_RELATION&&edge.from===rootId))
+    };
   }
 
   async function resolveEndpoint(id,rootId,rootDetail){
@@ -108,7 +117,8 @@
       const rootId=result.graph?.rootId||rootDetail.id||ROOT_INSTANCE_ID;
       if(rootId!==ROOT_INSTANCE_ID||rootDetail.id!==ROOT_INSTANCE_ID)throw new Error('Uventet flow-root');
 
-      const edges=flowEdges(result.graph||{},rootId);
+      const graph=acceptanceGraph(result.graph||{},rootId);
+      const edges=flowEdges(graph,rootId);
       const incoming=edges.filter(edge=>edge.to===rootId);
       const outgoing=edges.filter(edge=>edge.from===rootId);
       if(incoming.length!==1||outgoing.length!==1)throw new Error(`Flow kræver præcis én indgående og én udgående ${FLOW_RELATION}-relation`);
@@ -126,7 +136,7 @@
       loaded=true;
     }catch(error){
       console.error('M07 deterministic flow unavailable',error);
-      stateEl.textContent='Ikke understøttet';
+      stateEl.textContent=ACCEPTANCE_MODE==='missing-flow'?'Ikke understøttet · acceptance test':'Ikke understøttet';
       const message=document.createElement('div');
       message.className='m07FlowEmpty';
       message.textContent=`Flow kan ikke vises uden autoritative data · ${error instanceof Error?error.message:'ukendt fejl'}`;
