@@ -39,6 +39,15 @@ class M07DeterministicFlowTests(unittest.TestCase):
         self.assertIn("appendArrow(outgoing[0].type)", self.flow)
         self.assertIn("Ikke understøttet", self.flow)
 
+    def test_acceptance_hook_is_explicit_inert_and_local_only(self):
+        self.assertIn("new URLSearchParams(window.location.search).get('m07Acceptance')", self.flow)
+        self.assertIn("if(ACCEPTANCE_MODE!=='missing-flow')return graph", self.flow)
+        self.assertIn("acceptanceGraph(result.graph||{},rootId)", self.flow)
+        self.assertIn("edge.from===rootId", self.flow)
+        self.assertIn("Ikke understøttet · acceptance test", self.flow)
+        self.assertNotIn("baseUrl:", self.flow)
+        self.assertNotIn("fetch(", self.flow)
+
     def test_dynamic_authoritative_values_use_text_content(self):
         for expression in (
             "title.textContent=node.id",
