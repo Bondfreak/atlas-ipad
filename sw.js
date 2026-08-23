@@ -1,4 +1,4 @@
-const CACHE = "atlas-ipad-alpha-v0.3.30";
+const CACHE = "atlas-ipad-alpha-v0.3.31";
 const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./m07-deterministic-flow.js","./m07-version.js","./m08-kai-info.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
 const SERVER_ORIGIN = "https://shaka-server.onrender.com";
 const CORE_CLIENT = '<script src="./shaka-core-client.js"></script>';
@@ -13,8 +13,11 @@ self.addEventListener("install",event=>{
 });
 
 self.addEventListener("activate",event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));
-  self.clients.claim();
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
 
 function isAtlasDocument(request){
