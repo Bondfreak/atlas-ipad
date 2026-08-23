@@ -46,11 +46,31 @@
     return {detail:payload.data||{},meta:payload.meta||{}};
   }
 
+  async function loadCanonicalGraph(graphId,options={}){
+    if(!graphId)throw new Error('graphId is required');
+    const base=baseUrl(options);
+    const payload=await requestJson(`${base}/api/v1/cog/graphs/${encodeURIComponent(graphId)}`);
+    if(payload.data?.status!=='canonical')throw new Error('Unexpected non-canonical graph response');
+    return {graph:payload.data||{},meta:payload.meta||{}};
+  }
+
+  async function loadCanonicalObject(publicId,options={}){
+    if(!publicId)throw new Error('publicId is required');
+    const base=baseUrl(options);
+    const payload=await requestJson(`${base}/api/v1/cog/objects/${encodeURIComponent(publicId)}`);
+    const detail=payload.data||{};
+    const relations=Array.isArray(detail.relations)?detail.relations:[];
+    if(relations.some(edge=>edge?.status!=='verified'))throw new Error('Canonical response contains non-verified relation');
+    return {detail,meta:payload.meta||{}};
+  }
+
   global.ShakaCore=Object.freeze({
     baseUrl:DEFAULT_BASE,
     depth:DEPTH,
     loadAssetInstance,
     resolveAssetInstance,
-    loadObjectDetail
+    loadObjectDetail,
+    loadCanonicalGraph,
+    loadCanonicalObject
   });
 })(window);
