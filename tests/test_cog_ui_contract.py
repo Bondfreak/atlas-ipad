@@ -10,21 +10,31 @@ class CogUiContractTests(unittest.TestCase):
         text = (ROOT / "shaka-core-client.js").read_text(encoding="utf-8")
         self.assertIn("/api/v1/cog/graphs/", text)
         self.assertIn("/api/v1/cog/objects/", text)
+        self.assertIn("/api/v1/cog/flows/", text)
         self.assertIn("loadCanonicalGraph", text)
         self.assertIn("loadCanonicalObject", text)
+        self.assertIn("loadCanonicalFlow", text)
 
-    def test_browser_client_fails_closed_on_non_verified_relation(self) -> None:
+    def test_browser_client_fails_closed_on_non_verified_data(self) -> None:
         text = (ROOT / "shaka-core-client.js").read_text(encoding="utf-8")
         self.assertIn("edge?.status!=='verified'", text)
-        self.assertIn("Canonical response contains non-verified relation", text)
+        self.assertIn("edge?.type!=='supplies'", text)
+        self.assertIn("Canonical flow contains invalid edge", text)
 
     def test_live_panel_is_canonical_first(self) -> None:
         text = (ROOT / "core-live-integration.js").read_text(encoding="utf-8")
         self.assertIn("NAV-COG-D4-BB-COOLING-v0.1", text)
         self.assertIn("NAVIGATOR COG · LIVE READ-ONLY", text)
         self.assertIn("Canonical verified relations", text)
-        self.assertIn("loadCanonicalObject(INSTANCE_ID)", text)
-        self.assertIn("loadCanonicalGraph(CANONICAL_GRAPH_ID)", text)
+
+    def test_flow_panel_uses_cog_projection(self) -> None:
+        text = (ROOT / "m07-deterministic-flow.js").read_text(encoding="utf-8")
+        self.assertIn("SYS-D4-BB-Seawater", text)
+        self.assertIn("KØLESYSTEM · COG FLOW", text)
+        self.assertIn("loadCanonicalFlow(CIRCUIT_ID)", text)
+        self.assertIn("Canonical · delvis", text)
+        self.assertNotIn("FLOW_TO", text)
+        self.assertNotIn("resolveAssetInstance", text)
 
 
 if __name__ == "__main__":
