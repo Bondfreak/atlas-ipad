@@ -21,47 +21,49 @@
     const detail=await requestJson(`${base}/api/v1/asset-instances/${encoded}`);
     const graph=await requestJson(`${base}/api/v1/asset-instances/${encoded}/graph?depth=${DEPTH}`);
     if(graph.meta?.depth!==undefined&&graph.meta.depth!==DEPTH)throw new Error('Unexpected Shaka Server graph depth');
-    return {
-      detail:detail.data||{},
-      graph:graph.data||{rootId:instanceId,nodes:[],edges:[]},
-      meta:{detail:detail.meta||{},graph:graph.meta||{}}
-    };
+    return {detail:detail.data||{},graph:graph.data||{rootId:instanceId,nodes:[],edges:[]},meta:{detail:detail.meta||{},graph:graph.meta||{}}};
   }
 
   async function resolveAssetInstance(contextInstanceId,assetId,options={}){
     if(!contextInstanceId)throw new Error('contextInstanceId is required');
     if(!assetId)throw new Error('assetId is required');
     const base=baseUrl(options);
-    const context=encodeURIComponent(contextInstanceId);
-    const asset=encodeURIComponent(assetId);
-    const payload=await requestJson(`${base}/api/v1/asset-instances/${context}/resolve-asset/${asset}`);
+    const payload=await requestJson(`${base}/api/v1/asset-instances/${encodeURIComponent(contextInstanceId)}/resolve-asset/${encodeURIComponent(assetId)}`);
     return {detail:payload.data||{},meta:payload.meta||{}};
   }
 
   async function loadObjectDetail(publicId,options={}){
     if(!publicId)throw new Error('publicId is required');
-    const base=baseUrl(options);
-    const encoded=encodeURIComponent(publicId);
-    const payload=await requestJson(`${base}/api/v1/objects/${encoded}`);
+    const payload=await requestJson(`${baseUrl(options)}/api/v1/objects/${encodeURIComponent(publicId)}`);
     return {detail:payload.data||{},meta:payload.meta||{}};
   }
 
   async function loadCanonicalGraph(graphId,options={}){
     if(!graphId)throw new Error('graphId is required');
-    const base=baseUrl(options);
-    const payload=await requestJson(`${base}/api/v1/cog/graphs/${encodeURIComponent(graphId)}`);
+    const payload=await requestJson(`${baseUrl(options)}/api/v1/cog/graphs/${encodeURIComponent(graphId)}`);
     if(payload.data?.status!=='canonical')throw new Error('Unexpected non-canonical graph response');
     return {graph:payload.data||{},meta:payload.meta||{}};
   }
 
   async function loadCanonicalObject(publicId,options={}){
     if(!publicId)throw new Error('publicId is required');
-    const base=baseUrl(options);
-    const payload=await requestJson(`${base}/api/v1/cog/objects/${encodeURIComponent(publicId)}`);
+    const payload=await requestJson(`${baseUrl(options)}/api/v1/cog/objects/${encodeURIComponent(publicId)}`);
     const detail=payload.data||{};
     const relations=Array.isArray(detail.relations)?detail.relations:[];
     if(relations.some(edge=>edge?.status!=='verified'))throw new Error('Canonical response contains non-verified relation');
     return {detail,meta:payload.meta||{}};
+  }
+
+  async function loadCanonicalFlow(circuitId,options={}){
+    if(!circuitId)throw new Error('circuitId is required');
+    const payload=await requestJson(`${baseUrl(options)}/api/v1/cog/flows/${encodeURIComponent(circuitId)}`);
+    const flow=payload.data||{};
+    const nodes=Array.isArray(flow.nodes)?flow.nodes:[];
+    const edges=Array.isArray(flow.edges)?flow.edges:[];
+    const nodeIds=new Set(nodes.map(node=>node?.id).filter(Boolean));
+    if(!['canonical_partial','canonical_complete'].includes(flow.status))throw new Error('Unexpected canonical flow status');
+    if(edges.some(edge=>edge?.status!=='verified'||edge?.type!=='supplies'||!nodeIds.has(edge.from)||!nodeIds.has(edge.to)))throw new Error('Canonical flow contains invalid edge');
+    return {flow:{...flow,nodes,edges},meta:payload.meta||{}};
   }
 
   global.ShakaCore=Object.freeze({
@@ -71,6 +73,7 @@
     resolveAssetInstance,
     loadObjectDetail,
     loadCanonicalGraph,
-    loadCanonicalObject
+    loadCanonicalObject,
+    loadCanonicalFlow
   });
 })(window);
