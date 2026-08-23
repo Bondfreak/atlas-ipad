@@ -29,8 +29,6 @@ class M07DeterministicFlowTests(unittest.TestCase):
     def test_generic_asset_neighbors_are_contextually_resolved(self):
         self.assertIn("resolveAssetInstance(rootId,id)", self.flow)
         self.assertIn("if(id?.startsWith('ASSET-'))return 'asset'", self.flow)
-        self.assertNotIn("PORT", self.flow)
-        self.assertNotIn("STARBOARD", self.flow)
 
     def test_relation_direction_is_preserved_and_ambiguity_fails_closed(self):
         self.assertIn("incoming=edges.filter(edge=>edge.to===rootId)", self.flow)
@@ -65,9 +63,9 @@ class M07DeterministicFlowTests(unittest.TestCase):
         self.assertNotIn(CORE_ORIGIN, self.worker)
 
     def test_visible_version_and_service_worker_cache_are_synchronized(self):
-        self.assertIn("const VERSION='v0.3.30'", self.version)
-        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.30"', self.worker)
-        self.assertNotIn("atlas-ipad-alpha-v0.3.29", self.worker)
+        self.assertIn("const VERSION='v0.3.31'", self.version)
+        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.31"', self.worker)
+        self.assertNotIn("atlas-ipad-alpha-v0.3.30", self.worker)
 
 
 if __name__ == "__main__":

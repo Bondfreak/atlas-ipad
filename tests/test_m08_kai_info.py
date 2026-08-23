@@ -51,9 +51,9 @@ class M08KaiInfoTests(unittest.TestCase):
         self.assertIn("if(!body.includes('m08-kai-info.js'))scripts.push(M08_KAI)", self.worker)
         self.assertNotIn(CORE_ORIGIN, self.worker)
 
-    def test_v030_version_and_cache_are_synchronized(self):
-        self.assertIn("const VERSION='v0.3.30'", self.version)
-        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.30"', self.worker)
+    def test_v031_version_and_cache_are_synchronized(self):
+        self.assertIn("const VERSION='v0.3.31'", self.version)
+        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.31"', self.worker)
 
 
 if __name__ == "__main__":
