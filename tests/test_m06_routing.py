@@ -18,6 +18,8 @@ class M06RoutingTests(unittest.TestCase):
             "/graph?depth=",
             "/resolve-asset/",
             "/api/v1/objects/",
+            "/api/v1/cog/graphs/",
+            "/api/v1/cog/objects/",
         ):
             self.assertIn(route, client)
 
@@ -37,8 +39,10 @@ class M06RoutingTests(unittest.TestCase):
         integration = (ROOT / "core-live-integration.js").read_text(encoding="utf-8")
         self.assertNotIn(CORE_ORIGIN, integration)
         self.assertIn("window.ShakaCore.loadAssetInstance", integration)
-        self.assertIn("window.ShakaCore.resolveAssetInstance", integration)
-        self.assertIn("window.ShakaCore.loadObjectDetail", integration)
+        self.assertIn("window.ShakaCore.loadCanonicalObject", integration)
+        self.assertIn("window.ShakaCore.loadCanonicalGraph", integration)
+        self.assertNotIn("window.ShakaCore.resolveAssetInstance", integration)
+        self.assertNotIn("window.ShakaCore.loadObjectDetail", integration)
 
     def test_dynamic_values_remain_text_rendered(self):
         integration = (ROOT / "core-live-integration.js").read_text(encoding="utf-8")
