@@ -4,8 +4,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 CORE_ORIGIN = "https://shaka-core-app.onrender.com"
 SERVER_ORIGIN = "https://shaka-server.onrender.com"
-VERSION = "v0.3.31"
-CACHE = "atlas-ipad-alpha-v0.3.31"
+VERSION = "v0.3.32"
+CACHE = "atlas-ipad-alpha-v0.3.32"
 
 
 class M06RoutingTests(unittest.TestCase):
@@ -20,6 +20,7 @@ class M06RoutingTests(unittest.TestCase):
             "/api/v1/objects/",
             "/api/v1/cog/graphs/",
             "/api/v1/cog/objects/",
+            "/api/v1/cog/flows/",
         ):
             self.assertIn(route, client)
 
