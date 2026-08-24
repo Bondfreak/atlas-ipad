@@ -3,6 +3,7 @@
 
   const FLOWS=[
     {id:'SYS-D4-BB-Seawater',title:'KØLESYSTEM · COG FLOW',aria:'Canonical kølesystemsflow'},
+    {id:'SYS-D4-BB-Coolant',title:'FERSKVAND · COG FLOW',aria:'Canonical lukket kølevandsflow',closed:true,startType:'Pump'},
     {id:'SYS-D4-BB-Exhaust',title:'UDSTØDNING · COG FLOW',aria:'Canonical vådudstødningsflow'}
   ];
   const assemblyScreen=document.getElementById('assemblyScreen');
@@ -22,7 +23,7 @@
   `;
   document.head.appendChild(style);
 
-  function orderedNodes(flow){
+  function orderedNodes(flow,config){
     const nodes=Array.isArray(flow.nodes)?flow.nodes:[];
     const edges=Array.isArray(flow.edges)?flow.edges:[];
     const byId=new Map(nodes.map(node=>[node.id,node]));
@@ -30,12 +31,38 @@
     const incoming=new Map(nodes.map(node=>[node.id,0]));
     const outgoing=new Map();
     for(const edge of edges){
+      if(!byId.has(edge.from)||!byId.has(edge.to))throw new Error('Canonical flow refererer ukendt node');
       incoming.set(edge.to,(incoming.get(edge.to)||0)+1);
+      if((incoming.get(edge.to)||0)>1)throw new Error(`Canonical flow samler flere grene ved ${edge.to}`);
       if(outgoing.has(edge.from))throw new Error(`Canonical flow forgrener ved ${edge.from}`);
       outgoing.set(edge.from,edge.to);
     }
+
     const starts=nodes.filter(node=>(incoming.get(node.id)||0)===0&&outgoing.has(node.id));
-    if(starts.length!==1)throw new Error('Canonical flow har ikke præcis ét verificeret startpunkt');
+    if(starts.length===0&&config.closed){
+      const isSimpleCycle=edges.length===nodes.length&&nodes.every(node=>(incoming.get(node.id)||0)===1&&outgoing.has(node.id));
+      if(!isSimpleCycle)throw new Error('Canonical lukket flow er ikke en enkel verificeret kreds');
+      const preferred=config.startType?nodes.filter(node=>node.type===config.startType):[];
+      if(config.startType&&preferred.length!==1)throw new Error(`Canonical lukket flow mangler entydig ${config.startType}-startnode`);
+      const start=(preferred[0]||[...nodes].sort((a,b)=>String(a.id).localeCompare(String(b.id)))[0]);
+      const ordered=[];
+      const seen=new Set();
+      let current=start.id;
+      while(!seen.has(current)){
+        seen.add(current);
+        const node=byId.get(current);
+        if(!node)throw new Error(`Canonical flow mangler node ${current}`);
+        ordered.push(node);
+        current=outgoing.get(current);
+      }
+      if(current!==start.id||ordered.length!==nodes.length)throw new Error('Canonical lukket flow indeholder delkreds eller frakoblede noder');
+      return [...ordered,start];
+    }
+    if(starts.length!==1){
+      if(starts.length===0)throw new Error('Canonical flow indeholder cyklus');
+      throw new Error('Canonical flow har ikke præcis ét verificeret startpunkt');
+    }
+
     const ordered=[];
     const seen=new Set();
     let current=starts[0].id;
@@ -107,12 +134,12 @@
         const result=await window.ShakaCore.loadCanonicalFlow(config.id);
         const flow=result.flow||{};
         if(flow.circuitId!==config.id)throw new Error('Canonical flow returnerede forkert system-ID');
-        const ordered=orderedNodes(flow);
+        const ordered=orderedNodes(flow,config);
         if(ordered.length<2)throw new Error('Ingen verificeret canonical flow-kæde');
         ordered.forEach((node,index)=>{if(index)appendArrow();appendNode(node,flow)});
         const deferred=Number.isInteger(flow.deferredCandidateCount)?flow.deferredCandidateCount:0;
         stateEl.textContent=flow.complete?'Canonical · komplet':'Canonical · delvis';
-        noteEl.textContent=flow.complete?'Kun verified COG-relations bruges.':`${deferred} downstream candidate-relation${deferred===1?'':'er'} er bevidst ikke vist.`;
+        noteEl.textContent=flow.complete?(config.closed?'Kun verified COG-relations bruges · lukket warm-state kreds.':'Kun verified COG-relations bruges.'):`${deferred} downstream candidate-relation${deferred===1?'':'er'} er bevidst ikke vist.`;
         loaded=true;
       }catch(error){
         console.error(`Canonical COG flow unavailable for ${config.id}`,error);
