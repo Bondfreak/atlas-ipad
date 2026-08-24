@@ -66,6 +66,21 @@
     return {flow:{...flow,nodes,edges},meta:payload.meta||{}};
   }
 
+  async function loadCanonicalTopology(systemId,options={}){
+    if(!systemId)throw new Error('systemId is required');
+    const payload=await requestJson(`${baseUrl(options)}/api/v1/cog/topologies/${encodeURIComponent(systemId)}`);
+    const topology=payload.data||{};
+    const nodes=Array.isArray(topology.nodes)?topology.nodes:[];
+    const edges=Array.isArray(topology.edges)?topology.edges:[];
+    const deferredCandidates=Array.isArray(topology.deferredCandidates)?topology.deferredCandidates:[];
+    const nodeIds=new Set(nodes.map(node=>node?.id).filter(Boolean));
+    if(!['canonical_partial','canonical_complete'].includes(topology.status))throw new Error('Unexpected canonical topology status');
+    if(edges.some(edge=>edge?.status!=='verified'||!nodeIds.has(edge.from)||!nodeIds.has(edge.to)))throw new Error('Canonical topology contains invalid verified edge');
+    if(deferredCandidates.some(edge=>edge?.status!=='candidate'||!nodeIds.has(edge.from)||!nodeIds.has(edge.to)))throw new Error('Canonical topology contains invalid deferred candidate');
+    if(payload.meta?.physicalCableRoutingVerified!==false)throw new Error('Unexpected physical routing claim');
+    return {topology:{...topology,nodes,edges,deferredCandidates},meta:payload.meta||{}};
+  }
+
   global.ShakaCore=Object.freeze({
     baseUrl:DEFAULT_BASE,
     depth:DEPTH,
@@ -74,6 +89,7 @@
     loadObjectDetail,
     loadCanonicalGraph,
     loadCanonicalObject,
-    loadCanonicalFlow
+    loadCanonicalFlow,
+    loadCanonicalTopology
   });
 })(window);
