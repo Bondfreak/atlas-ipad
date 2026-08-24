@@ -26,8 +26,8 @@ class P16EvcTopologyUiTests(unittest.TestCase):
         text = (ROOT / "p16-evc-topology.js").read_text(encoding="utf-8")
         self.assertIn("VERIFIED · CANONICAL", text)
         self.assertIn("DEFERRED · IKKE VERIFICERET", text)
-        self.assertIn("evcEdge verified", text)
-        self.assertIn("evcEdge candidate", text)
+        self.assertIn(".evcEdge.verified", text)
+        self.assertIn(".evcEdge.candidate", text)
         self.assertIn("fysisk kabelrouting er ikke verificeret", text)
 
     def test_service_worker_injects_p16_and_bumps_cache(self) -> None:
