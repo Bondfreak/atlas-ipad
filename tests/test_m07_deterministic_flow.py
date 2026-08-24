@@ -69,8 +69,8 @@ class M07DeterministicFlowTests(unittest.TestCase):
         self.assertNotIn(CORE_ORIGIN, self.worker)
 
     def test_visible_version_and_service_worker_cache_are_synchronized(self):
-        self.assertIn("const VERSION='v0.3.34'", self.version)
-        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.34"', self.worker)
+        self.assertIn("const VERSION='v0.3.35'", self.version)
+        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.35"', self.worker)
 
 
 if __name__ == "__main__":
