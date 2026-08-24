@@ -27,12 +27,15 @@ class CogUiContractTests(unittest.TestCase):
         self.assertIn("NAVIGATOR COG · LIVE READ-ONLY", text)
         self.assertIn("Canonical verified relations", text)
 
-    def test_flow_panel_uses_cog_projection(self) -> None:
+    def test_flow_panels_use_cog_projection(self) -> None:
         text = (ROOT / "m07-deterministic-flow.js").read_text(encoding="utf-8")
         self.assertIn("SYS-D4-BB-Seawater", text)
+        self.assertIn("SYS-D4-BB-Exhaust", text)
         self.assertIn("KØLESYSTEM · COG FLOW", text)
-        self.assertIn("loadCanonicalFlow(CIRCUIT_ID)", text)
+        self.assertIn("UDSTØDNING · COG FLOW", text)
+        self.assertIn("loadCanonicalFlow(config.id)", text)
         self.assertIn("Canonical · delvis", text)
+        self.assertIn("Canonical · komplet", text)
         self.assertNotIn("FLOW_TO", text)
         self.assertNotIn("resolveAssetInstance", text)
 
