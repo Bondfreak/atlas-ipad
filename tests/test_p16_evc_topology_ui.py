@@ -33,9 +33,9 @@ class P16EvcTopologyUiTests(unittest.TestCase):
     def test_service_worker_injects_p16_and_bumps_cache(self) -> None:
         sw = (ROOT / "sw.js").read_text(encoding="utf-8")
         version = (ROOT / "m07-version.js").read_text(encoding="utf-8")
-        self.assertIn("atlas-ipad-alpha-v0.3.35", sw)
+        self.assertIn("atlas-ipad-alpha-v0.3.36", sw)
         self.assertIn("p16-evc-topology.js", sw)
-        self.assertIn("v0.3.35", version)
+        self.assertIn("v0.3.36", version)
 
 
 if __name__ == "__main__":
