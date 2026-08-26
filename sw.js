@@ -34,10 +34,10 @@ async function injectCoreIntegration(response){
   if(!body.includes('shaka-core-client.js'))scripts.push(CORE_CLIENT);
   if(!body.includes('core-live-integration.js'))scripts.push(CORE_INTEGRATION);
   if(!body.includes('m07-deterministic-flow.js'))scripts.push(M07_FLOW);
-  if(!body.includes('m07-version.js'))scripts.push(M07_VERSION);
   if(!body.includes('m08-kai-info.js'))scripts.push(M08_KAI);
   if(!body.includes('p16-evc-topology.js'))scripts.push(P16_EVC);
   if(!body.includes('p17-evc-diagnostic.js'))scripts.push(P17_EVC_DIAG);
+  if(!body.includes('m07-version.js'))scripts.push(M07_VERSION);
   if(scripts.length)body=body.replace("</body>",`${scripts.join('')}\n</body>`);
   const headers=new Headers(response.headers);
   headers.delete("content-length");
