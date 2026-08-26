@@ -81,6 +81,23 @@
     return {topology:{...topology,nodes,edges,deferredCandidates},meta:payload.meta||{}};
   }
 
+  async function loadCanonicalDiagnostic(scenarioId,options={}){
+    if(!scenarioId)throw new Error('scenarioId is required');
+    const payload=await requestJson(`${baseUrl(options)}/api/v1/cog/diagnostics/${encodeURIComponent(scenarioId)}`);
+    const diagnostic=payload.data||{};
+    const verifiedAnchors=Array.isArray(diagnostic.verifiedAnchors)?diagnostic.verifiedAnchors:[];
+    const deferredInvestigation=Array.isArray(diagnostic.deferredInvestigation)?diagnostic.deferredInvestigation:[];
+    const meta=payload.meta||{};
+    if(diagnostic.scenarioId!==scenarioId||diagnostic.status!=='diagnostic_bounded_partial')throw new Error('Unexpected diagnostic scenario response');
+    if(diagnostic.rootCauseDetermined!==false)throw new Error('Unexpected diagnostic root-cause claim');
+    if(verifiedAnchors.some(item=>item?.status!=='verified'))throw new Error('Diagnostic anchor is not verified');
+    if(deferredInvestigation.some(item=>item?.status!=='candidate'))throw new Error('Diagnostic candidate was promoted');
+    if(meta.projection!=='verified_diagnostic_anchors_with_explicit_candidate_investigation')throw new Error('Unexpected diagnostic projection');
+    if(meta.candidateRelationsPromoted!==false||meta.physicalCableRoutingVerified!==false)throw new Error('Unexpected diagnostic confidence claim');
+    if(meta.diagnosticNature!=='scenario_template_not_root_cause_determination')throw new Error('Unexpected diagnostic nature');
+    return {diagnostic:{...diagnostic,verifiedAnchors,deferredInvestigation},meta};
+  }
+
   global.ShakaCore=Object.freeze({
     baseUrl:DEFAULT_BASE,
     depth:DEPTH,
@@ -90,6 +107,7 @@
     loadCanonicalGraph,
     loadCanonicalObject,
     loadCanonicalFlow,
-    loadCanonicalTopology
+    loadCanonicalTopology,
+    loadCanonicalDiagnostic
   });
 })(window);
