@@ -52,8 +52,8 @@ class M08KaiInfoTests(unittest.TestCase):
         self.assertNotIn(CORE_ORIGIN, self.worker)
 
     def test_current_version_and_cache_are_synchronized(self):
-        self.assertIn("const VERSION='v0.3.35'", self.version)
-        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.35"', self.worker)
+        self.assertIn("const VERSION='v0.3.36'", self.version)
+        self.assertIn('const CACHE = "atlas-ipad-alpha-v0.3.36"', self.worker)
 
 
 if __name__ == "__main__":
