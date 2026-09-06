@@ -37,7 +37,7 @@
   screen.id='evcDiagnosticScreen';
   screen.hidden=true;
   screen.innerHTML=`
-    <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / Motor / Betjening · EVC / <b>Diagnostik</b></div><div class="status">System online · Atlas v0.3.36</div></header>
+    <header class="topbar"><div class="brand">ATLAS</div><div class="crumb">Shaka / Motor / Betjening · EVC / <b>Diagnostik</b></div><div class="status">System online · Atlas v0.3.37</div></header>
     <div class="diagWorkspace">
       <aside class="diagInfo"><div class="diagInfoTop"><small>Informationszone · diagnostic projection</small><h1>EVC Diagnostik</h1></div><div class="diagInfoBody"><div><span class="badge">Bounded · ingen root cause</span><p>Visningen prioriterer kun verificerede diagnostic anchors og holder candidates eksplicit adskilt.</p></div><dl class="diagMeta"><div><dt>Scenario</dt><dd>${SCENARIO_ID}</dd></div><div><dt>Princip</dt><dd>Wake/power før downstream kommunikation</dd></div><div><dt>Root cause</dt><dd>Ikke fastslået</dd></div></dl></div></aside>
       <section class="diagCanvas" aria-label="EVC bounded diagnostic projection">

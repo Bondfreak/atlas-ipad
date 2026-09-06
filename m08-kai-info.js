@@ -1,7 +1,14 @@
 (()=>{
   'use strict';
 
-  const SERVER_ORIGIN='https://shaka-server.onrender.com';
+  const DEFAULT_SERVER_ORIGIN='https://shaka-server.onrender.com';
+  function serverOrigin(){
+    if(window.AtlasServer&&typeof window.AtlasServer.resolveServerOrigin==='function'){
+      return window.AtlasServer.resolveServerOrigin();
+    }
+    return DEFAULT_SERVER_ORIGIN;
+  }
+
   const INSTANCE_ID='AI-D4-BB-SeaWaterPump';
   const assemblyScreen=document.getElementById('assemblyScreen');
   const assemblyInfo=assemblyScreen?.querySelector('.assemblyInfo');
@@ -46,7 +53,7 @@
     setText(textEl,'Henter en grounded forklaring via Shaka Server…');
     setText(evidenceEl,'');
     try{
-      const response=await fetch(`${SERVER_ORIGIN}/api/v1/kai/explain`,{
+      const response=await fetch(`${serverOrigin()}/api/v1/kai/explain`,{
         method:'POST',
         headers:{'Accept':'application/json','Content-Type':'application/json'},
         cache:'no-store',
@@ -68,11 +75,11 @@
       const code=error?.code||'';
       setText(stateEl,'Utilgængelig');
       if(code==='kai_unavailable'){
-        setText(textEl,'KAI er midlertidigt utilgængelig. Atlas-navigation og Core-visualisering virker fortsat uden KAI.');
+        setText(textEl,'KAI er midlertidigt utilgængelig (F1/evidens eller LLM). Atlas-navigation og Core-visualisering virker fortsat uden KAI.');
       }else{
         setText(textEl,`KAI-forklaring kunne ikke hentes · ${error?.message||'ukendt fejl'}`);
       }
-      setText(evidenceEl,'Ingen forklaring vises uden et gyldigt grounded Server-svar.');
+      setText(evidenceEl,'Ingen forklaring vises uden et gyldigt grounded Server-svar. F1-svar-UI kan bruges separat hvis evidens fejler.');
     }finally{
       buttonEl.disabled=false;
     }
