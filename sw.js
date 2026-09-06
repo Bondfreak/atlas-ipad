@@ -1,11 +1,13 @@
-const CACHE = "atlas-ipad-alpha-v0.3.36";
-const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./m07-deterministic-flow.js","./m07-version.js","./m08-kai-info.js","./p16-evc-topology.js","./p17-evc-diagnostic.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
+const CACHE = "atlas-ipad-alpha-v0.3.37";
+const ASSETS = ["./","./index.html","./manifest.json","./Hero-v2.png","./motor-system.png","./cooling-system.png","./shaka-core-client.js","./core-live-integration.js","./m07-deterministic-flow.js","./m07-version.js","./server-origin.js","./m08-kai-info.js","./s4-f1-answer.js","./p16-evc-topology.js","./p17-evc-diagnostic.js","./icon-192.png","./icon-512.png","./apple-touch-icon.png"];
 const SERVER_ORIGIN = "https://shaka-server.onrender.com";
 const CORE_CLIENT = '<script src="./shaka-core-client.js"></script>';
 const CORE_INTEGRATION = '<script src="./core-live-integration.js"></script>';
 const M07_FLOW = '<script src="./m07-deterministic-flow.js"></script>';
 const M07_VERSION = '<script src="./m07-version.js"></script>';
 const M08_KAI = '<script src="./m08-kai-info.js"></script>';
+const SERVER_ORIGIN_CFG = '<script src="./server-origin.js"></script>';
+const S4_F1 = '<script src="./s4-f1-answer.js"></script>';
 const P16_EVC = '<script src="./p16-evc-topology.js"></script>';
 const P17_EVC_DIAG = '<script src="./p17-evc-diagnostic.js"></script>';
 
@@ -31,10 +33,12 @@ function isAtlasDocument(request){
 async function injectCoreIntegration(response){
   let body=await response.text();
   const scripts=[];
+  if(!body.includes('server-origin.js'))scripts.push(SERVER_ORIGIN_CFG);
   if(!body.includes('shaka-core-client.js'))scripts.push(CORE_CLIENT);
   if(!body.includes('core-live-integration.js'))scripts.push(CORE_INTEGRATION);
   if(!body.includes('m07-deterministic-flow.js'))scripts.push(M07_FLOW);
   if(!body.includes('m08-kai-info.js'))scripts.push(M08_KAI);
+  if(!body.includes('s4-f1-answer.js'))scripts.push(S4_F1);
   if(!body.includes('p16-evc-topology.js'))scripts.push(P16_EVC);
   if(!body.includes('p17-evc-diagnostic.js'))scripts.push(P17_EVC_DIAG);
   if(!body.includes('m07-version.js'))scripts.push(M07_VERSION);

@@ -11,7 +11,33 @@
   }
 
   function baseUrl(options={}){
-    return (options.baseUrl||DEFAULT_BASE).replace(/\/$/,'');
+    if(options.baseUrl)return String(options.baseUrl).replace(/\/$/,'');
+    if(global.AtlasServer&&typeof global.AtlasServer.resolveServerOrigin==='function'){
+      return global.AtlasServer.resolveServerOrigin(options);
+    }
+    return DEFAULT_BASE;
+  }
+
+  async function postF1Answer(query,options={}){
+    if(query==null||!String(query).trim())throw new Error('query is required');
+    const base=baseUrl(options);
+    const response=await fetch(`${base}/api/v1/f1/answer`,{
+      method:'POST',
+      headers:{Accept:'application/json','Content-Type':'application/json'},
+      cache:'no-store',
+      body:JSON.stringify({query:String(query).trim()})
+    });
+    let payload={};
+    try{payload=await response.json()}catch(_){throw new Error(`Shaka Server HTTP ${response.status}`)}
+    if(!response.ok){
+      const error=new Error(payload?.error?.message||`Shaka Server HTTP ${response.status}`);
+      error.code=payload?.error?.code||`http_${response.status}`;
+      throw error;
+    }
+    if(typeof payload?.conclusion!=='string'||!('epistemic_status' in payload)||!Array.isArray(payload?.basis)||!Array.isArray(payload?.sources)){
+      throw new Error('Ugyldigt F1-svar');
+    }
+    return payload;
   }
 
   async function loadAssetInstance(instanceId,options={}){
@@ -108,6 +134,7 @@
     loadCanonicalObject,
     loadCanonicalFlow,
     loadCanonicalTopology,
-    loadCanonicalDiagnostic
+    loadCanonicalDiagnostic,
+    postF1Answer
   });
 })(window);

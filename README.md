@@ -32,3 +32,8 @@ Open `http://localhost:8000` in a browser. PWA/service-worker behavior requires 
 ## Evidence and authority
 
 This README is an orientation document. Current implementation truth is defined by `main`, the deployed frontend, repository tests/CI and the governed Navigator acceptance records. Shaka Core remains authoritative for accepted domain facts, relations and provenance returned through the bounded Server path.
+
+## S4 F1 Answer UI
+
+Bounded F1 Canonical Read touch panel (`POST /api/v1/f1/answer`) is documented in `S4_F1_ANSWER_UI.md`, including how to point `SERVER_ORIGIN` at a local Server (`http://127.0.0.1:8000`).
+

@@ -39,7 +39,7 @@ def test_p17_utf8_text_is_not_committed_as_mojibake() -> None:
 def test_p17_service_worker_cache_and_load_order() -> None:
     sw = read("sw.js")
     version = read("m07-version.js")
-    assert 'atlas-ipad-alpha-v0.3.36' in sw
+    assert 'atlas-ipad-alpha-v0.3.37' in sw
     assert 'p17-evc-diagnostic.js' in sw
-    assert "v0.3.36" in version
+    assert "v0.3.37" in version
     assert sw.index("scripts.push(P17_EVC_DIAG)") < sw.index("scripts.push(M07_VERSION)")
