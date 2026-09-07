@@ -82,7 +82,29 @@
     return card;
   }
 
+  function confidenceContractVerified(diagnostic,meta){
+    return diagnostic?.rootCauseDetermined===false
+      &&meta?.projection==='verified_diagnostic_anchors_with_explicit_candidate_investigation'
+      &&meta?.candidateRelationsPromoted===false
+      &&meta?.physicalCableRoutingVerified===false
+      &&meta?.diagnosticNature==='scenario_template_not_root_cause_determination';
+  }
+
+  function renderBlocked(){
+    statusEl.className='diagStatus error';statusEl.textContent='Blokeret · fail-closed';
+    screen.querySelector('.badge').textContent='Blokeret · confidence contract';
+    summaryEl.innerHTML='<strong>Diagnostic data er blokeret</strong><span>Confidence-kontrakten kunne ikke verificeres. Navigator viser derfor ingen diagnostic claims.</span>';
+    verifiedEl.replaceChildren();deferredEl.replaceChildren();
+    verifiedEl.textContent='—';deferredEl.textContent='—';
+    screen.querySelector('#diagBoundary').textContent='Fail-closed: diagnostic claims må først vises, når root-cause-, candidate-, routing- og projection-kontrakten er eksplicit verificeret.';
+    retryEl.hidden=false;
+  }
+
   function render(diagnostic,meta){
+    if(!confidenceContractVerified(diagnostic,meta)){
+      renderBlocked();
+      return false;
+    }
     const verified=diagnostic.verifiedAnchors||[];
     const deferred=diagnostic.deferredInvestigation||[];
     summaryEl.replaceChildren();
@@ -94,9 +116,8 @@
     deferred.forEach(item=>deferredEl.appendChild(renderCard(item,'candidate')));
     statusEl.className='diagStatus ok';statusEl.textContent='Bounded · fail-closed';
     screen.querySelector('.badge').textContent='Bounded · ingen root cause';
-    screen.querySelector('#diagBoundary').textContent=meta?.physicalCableRoutingVerified===false&&meta?.candidateRelationsPromoted===false
-      ?'Ingen root cause er fastslået. Candidate relationer er ikke promoveret, og fysisk kabelrouting er ikke verificeret. Wake/power kontrolleres derfor før downstream kommunikationshypoteser.'
-      :'Diagnostic confidence contract kunne ikke verificeres.';
+    screen.querySelector('#diagBoundary').textContent='Ingen root cause er fastslået. Candidate relationer er ikke promoveret, og fysisk kabelrouting er ikke verificeret. Wake/power kontrolleres derfor før downstream kommunikationshypoteser.';
+    return true;
   }
 
   async function loadDiagnostic(){
@@ -104,7 +125,7 @@
     try{
       if(!window.ShakaCore?.loadCanonicalDiagnostic)throw new Error('Diagnostic klient mangler');
       const result=await window.ShakaCore.loadCanonicalDiagnostic(SCENARIO_ID);
-      render(result.diagnostic,result.meta);loaded=true;
+      loaded=render(result.diagnostic,result.meta);
     }catch(error){
       console.error('Navigator EVC diagnostic unavailable',error);
       statusEl.className='diagStatus error';statusEl.textContent='Diagnostik utilgængelig';

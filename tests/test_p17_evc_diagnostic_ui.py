@@ -28,6 +28,27 @@ def test_p17_ui_preserves_verified_candidate_boundary() -> None:
     assert "Candidates må ikke læses som verificerede fejlveje" in ui
 
 
+def test_p17_ui_independently_enforces_confidence_contract() -> None:
+    ui = read("p17-evc-diagnostic.js")
+    assert "function confidenceContractVerified" in ui
+    assert "diagnostic?.rootCauseDetermined===false" in ui
+    assert "verified_diagnostic_anchors_with_explicit_candidate_investigation" in ui
+    assert "meta?.candidateRelationsPromoted===false" in ui
+    assert "meta?.physicalCableRoutingVerified===false" in ui
+    assert "scenario_template_not_root_cause_determination" in ui
+    assert "if(!confidenceContractVerified(diagnostic,meta))" in ui
+
+
+def test_p17_ui_blocks_claims_when_confidence_contract_fails() -> None:
+    ui = read("p17-evc-diagnostic.js")
+    assert "function renderBlocked" in ui
+    assert "Blokeret · fail-closed" in ui
+    assert "Diagnostic data er blokeret" in ui
+    assert "Navigator viser derfor ingen diagnostic claims" in ui
+    assert "verifiedEl.replaceChildren();deferredEl.replaceChildren();" in ui
+    assert "loaded=render(result.diagnostic,result.meta)" in ui
+
+
 def test_p17_utf8_text_is_not_committed_as_mojibake() -> None:
     sources = read("p17-evc-diagnostic.js") + read("shaka-core-client.js")
     assert "Åbn diagnostik" in sources
